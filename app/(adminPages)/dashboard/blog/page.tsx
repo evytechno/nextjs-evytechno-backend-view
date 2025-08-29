@@ -97,7 +97,7 @@ export default function Page() {
   }, []);
   return (
     <div className="flex flex-col gap-5">
-      <PageHeader name="Blogs" />
+      <PageHeader name="Blogs" addlink="./blog/create" />
       {tableData === [] ? (
         <span>No Data</span>
       ) : (
