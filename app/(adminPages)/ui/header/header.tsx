@@ -4,7 +4,7 @@ import ActionIcons from "./action-iconset";
 
 const Header = () => {
   return (
-    <div className="flex w-full justify-between items-center mb-4 mt-3 pr-4">
+    <div className="flex w-full justify-between items-center mb-4 mt-3">
       <Link href="/dashboard">
         <PageTitle>Admin Panel</PageTitle>
       </Link>
