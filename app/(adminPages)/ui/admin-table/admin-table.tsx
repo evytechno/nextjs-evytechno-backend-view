@@ -13,8 +13,8 @@ const AdminTable = ({
 }) => {
   return (
     <table className="my-5 px-5 text-left rounded-3xl">
-      <thead className="bg-[#F8F9FA] text-[#2F3746] ">
-        <tr>
+      <thead className="bg-[#F8F9FA] text-[#2F3746] rounded-3xl ">
+        <tr className="rounded-3xl">
           {tableHead.map(({ label }, id) => {
             return (
               <th className="p-5" key={id}>

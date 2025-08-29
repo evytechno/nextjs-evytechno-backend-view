@@ -1,7 +1,12 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import AdminTable from "../../ui/admin-table/admin-table";
 import PageHeader from "../../ui/page-header/page-header";
+import { fetchBlogList } from "@/app/API/route";
 
 export default function Page() {
+  const [tableData, setTableData] = useState([]);
   const tableHead = [
     {
       key: "title",
@@ -32,9 +37,15 @@ export default function Page() {
       label: "Publish On",
       render: (value: string) => {
         const d = new Date(value);
-        return `${d.getDate()} ${d.toLocaleDateString("default", {
-          month: "short",
-        })}, ${d.getFullYear()}`;
+        return (
+          <>
+            {value !== null
+              ? `${d.getDate()} ${d.toLocaleDateString("default", {
+                  month: "short",
+                })}, ${d.getFullYear()}`
+              : "Will be published soon"}
+          </>
+        );
       },
     },
     {
@@ -58,7 +69,7 @@ export default function Page() {
     },
   ];
 
-  const tableData = [
+  const tableDataStatic = [
     {
       id: "abdasdkajd",
       title: "ABCDEd",
@@ -76,10 +87,22 @@ export default function Page() {
       category: "SEO",
     },
   ];
+  async function getData() {
+    const blogList = await fetchBlogList();
+    console.log(blogList);
+    setTableData(blogList.data);
+  }
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <div className="flex flex-col gap-5">
       <PageHeader name="Blogs" />
-      <AdminTable tableHead={tableHead} tableData={tableData} />
+      {tableData === [] ? (
+        <span>No Data</span>
+      ) : (
+        <AdminTable tableHead={tableHead} tableData={tableData} />
+      )}
     </div>
   );
 }
