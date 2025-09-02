@@ -221,7 +221,11 @@ export default function Page() {
         {/* ContentCard  */}
         <Card>
           <FormLayout title="Content">
-            <TextEditor value={content} onContentChange={setContent} />
+            <TextEditor
+              placeholder="Blog Content Starts here..."
+              value={content}
+              onContentChange={setContent}
+            />
 
             <div className="p-2 border rounded">
               <strong>Preview:</strong>
