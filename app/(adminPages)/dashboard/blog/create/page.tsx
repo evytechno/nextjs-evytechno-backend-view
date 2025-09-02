@@ -128,20 +128,20 @@ export default function Page() {
       </Card>
     );
   };
-  // const ContentCard = () => {
-  //   return (
-  //     <Card>
-  //       <FormLayout title="Content">
-  //         <TextEditor value={content} onContentChange={setContent} />
+  const ContentCard = () => {
+    return (
+      <Card>
+        <FormLayout title="Content">
+          <TextEditor value={content} onContentChange={setContent} />
 
-  //         <div className="p-2 border rounded">
-  //           <strong>Preview:</strong>
-  //           <div dangerouslySetInnerHTML={{ __html: content }} />
-  //         </div>
-  //       </FormLayout>
-  //     </Card>
-  //   );
-  // };
+          <div className="p-2 border rounded">
+            <strong>Preview:</strong>
+            <div dangerouslySetInnerHTML={{ __html: content }} />
+          </div>
+        </FormLayout>
+      </Card>
+    );
+  };
   const MetaCard = () => {
     return (
       <Card>

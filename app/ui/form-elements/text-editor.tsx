@@ -31,6 +31,7 @@ const TextEditor = ({ value, onContentChange }: TextEditorProps) => {
         onChange={onContentChange}
         modules={modules}
         theme="snow"
+        className="w-full border-2 border-[#E5E7EB] rounded-3xl"
       />
     </div>
   );

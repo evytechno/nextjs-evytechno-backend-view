@@ -5,7 +5,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex w-full gap-4">
       <SideBar />
-      <div className="flex flex-col gap-3 w-full h-screen overflow-y-auto no-scrollbar">
+      <div className="flex flex-col gap-3 w-full h-screen overflow-y-auto no-scrollbar pb-5">
         <Header />
         <div className="pr-4">{children}</div>
       </div>
