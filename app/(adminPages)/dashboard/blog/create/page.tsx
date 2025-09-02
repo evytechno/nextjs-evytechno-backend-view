@@ -132,7 +132,11 @@ export default function Page() {
     return (
       <Card>
         <FormLayout title="Content">
-          <TextEditor value={content} onContentChange={setContent} />
+          <TextEditor
+            placeholder="Blog Content Here"
+            value={content}
+            onContentChange={setContent}
+          />
 
           <div className="p-2 border rounded">
             <strong>Preview:</strong>

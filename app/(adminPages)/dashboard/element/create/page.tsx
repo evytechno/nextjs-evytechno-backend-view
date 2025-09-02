@@ -1,5 +1,7 @@
 "use client";
+
 import Card from "@/app/ui/card/card";
+import DropDown from "@/app/ui/form-elements/dropdown";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
@@ -8,19 +10,23 @@ import { useState } from "react";
 
 export default function Page() {
   const [content, setContent] = useState("");
-  const [banner, setBanner] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-
   const [icon, setIcon] = useState<File | null>(null);
   const [iconPreview, setIconPreview] = useState<string | null>(null);
+  const [options, setOptions] = useState([
+    {
+      _id: "68ac4ccaf6405d14145c26be",
+      name: "Web Dev",
+    },
+    {
+      _id: "68ac4cf5f6405d14145c26c2",
+      name: "SEO",
+    },
+    {
+      _id: "68ac4d6c451cbebaa7a25da6",
+      name: "App Dev",
+    },
+  ]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setBanner(e.target.files[0]);
-      setPreview(URL.createObjectURL(e.target.files[0]));
-    }
-    console.log(banner);
-  };
   const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setIcon(e.target.files[0]);
@@ -28,12 +34,9 @@ export default function Page() {
     }
     console.log(icon);
   };
-
-  //Text editor content
-
   return (
     <div className="flex flex-col gap-10">
-      <PageTitle>Create a New Service</PageTitle>
+      <PageTitle>Create a New Element</PageTitle>
       <form className="flex flex-col gap-10">
         {/* Hello Admin Card  */}
         <Card>
@@ -59,19 +62,23 @@ export default function Page() {
           </div>
         </Card>
         {/* <BasicDetailsCard /> */}
-        <Card>
-          <FormLayout title="Basic Details">
-            <Input name="title" placeholder="Blog Title" />
-            <TextEditor
-              placeholder="Description of the Service"
-              value={content}
-              onContentChange={setContent}
-            />
-          </FormLayout>
-        </Card>
-
-        {/* <Icon and Banner /> */}
         <div className="flex gap-2">
+          <Card>
+            <FormLayout title="Basic Details">
+              <Input name="name" placeholder="Element name" />
+              <TextEditor
+                value={content}
+                placeholder="Description of Element"
+                onContentChange={setContent}
+              />
+              <DropDown
+                name="service"
+                placeholder="Service to which the element belongs"
+                options={options}
+              />
+            </FormLayout>
+          </Card>
+
           <Card>
             <FormLayout title="Icon ">
               <input
@@ -87,35 +94,6 @@ export default function Page() {
               <button className="bg-[#6366F1] text-white font-semibold p-4 rounded-3xl w-fit">
                 Upload
               </button>
-            </FormLayout>
-          </Card>
-          <Card>
-            <FormLayout title="Post Cover">
-              <input
-                type="file"
-                name="banner"
-                accept="image/"
-                className="w-full border-2 border-[#E5E7EB] rounded-3xl p-3"
-                onChange={(e) => handleFileChange(e)}
-              />
-              {preview && (
-                <img src={preview} alt="preview" height={100} width={100} />
-              )}
-              <button className="bg-[#6366F1] text-white font-semibold p-4 rounded-3xl w-fit">
-                Upload
-              </button>
-            </FormLayout>
-          </Card>
-        </div>
-        {/* <Color for gradient picker /> */}
-        <div className="flex gap-2">
-          <Card>
-            <FormLayout title="Color Picker for Gradient ">
-              <div className="flex justify-between items-center gap-3">
-                <Input type="color" name="color1" placeholder="Color 1" />
-
-                <Input type="color" name="color2" placeholder="Color 2" />
-              </div>
             </FormLayout>
           </Card>
         </div>

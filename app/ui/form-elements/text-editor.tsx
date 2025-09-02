@@ -11,6 +11,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 interface TextEditorProps {
   value: string;
   onContentChange: (value: string) => void;
+  placeholder: string;
 }
 
 const modules = {
@@ -23,7 +24,11 @@ const modules = {
     ["clean"],
   ],
 };
-const TextEditor = ({ value, onContentChange }: TextEditorProps) => {
+const TextEditor = ({
+  value,
+  onContentChange,
+  placeholder,
+}: TextEditorProps) => {
   return (
     <div>
       <ReactQuill
@@ -31,6 +36,7 @@ const TextEditor = ({ value, onContentChange }: TextEditorProps) => {
         onChange={onContentChange}
         modules={modules}
         theme="snow"
+        placeholder={placeholder}
         className="w-full border-2 border-[#E5E7EB] rounded-3xl"
       />
     </div>

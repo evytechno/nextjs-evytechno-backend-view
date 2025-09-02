@@ -6,6 +6,7 @@ const links = [
   { name: "Home", href: "/dashboard", icon: "" },
   { name: "Blog", href: "/dashboard/blog", icon: "" },
   { name: "Service", href: "/dashboard/service", icon: "" },
+  { name: "Element", href: "/dashboard/element", icon: "" },
 ];
 
 export default function NavLinks() {
