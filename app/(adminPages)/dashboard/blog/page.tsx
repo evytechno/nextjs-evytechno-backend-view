@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AdminTable from "../../ui/admin-table/admin-table";
-import PageHeader from "../../ui/page-header/page-header";
-import { fetchBlogList } from "@/app/API/route";
+import AdminTable from "../../../ui/admin-table/admin-table";
+import PageHeader from "../../../ui/page-header/page-header";
+import { fetchBlogList } from "@/app/API/blog.route";
 
 export default function Page() {
   const [tableData, setTableData] = useState([]);

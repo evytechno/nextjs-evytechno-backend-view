@@ -1,5 +1,5 @@
-import SideBar from "../ui/dashboard/sidebar";
-import Header from "../ui/header/header";
+import SideBar from "../../ui/dashboard/sidebar";
+import Header from "../../ui/header/header";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
