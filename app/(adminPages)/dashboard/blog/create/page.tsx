@@ -65,137 +65,51 @@ export default function Page() {
     }
   };
 
-  //components
-  const HelloAdminCard = () => {
-    return (
-      <Card>
-        <div className="flex justify-between items-center">
-          <span className="text-[20px] font-semibold">Hello Admin!!!</span>
-          <div className="flex gap-3">
-            <button
-              type="submit"
-              className="bg-[#1C2536] text-white font-semibold p-4 rounded-3xl"
-            >
-              Save
-            </button>
-            <button
-              // type="submit"
-              className="bg-[#6366F1] text-white font-semibold p-4 rounded-3xl"
-            >
-              Publish Now
-            </button>
-            <button className="bg-red-400/20 text-red-800 font-semibold p-4 rounded-3xl">
-              Cancel
-            </button>
-          </div>
-        </div>
-      </Card>
-    );
-  };
-  const BasicDetailsCard = () => {
-    return (
-      <Card>
-        <FormLayout title="Basic Details">
-          <Input name="title" placeholder="Blog Title" />
-          <Input name="short_description" placeholder="Short Description" />
-          <DropDown
-            name="category"
-            placeholder="Select a category for the Blog"
-            options={options}
-          />
-        </FormLayout>
-      </Card>
-    );
-  };
-  const PostCoverCard = () => {
-    return (
-      <Card>
-        <FormLayout title="Post Cover">
-          <input
-            type="file"
-            name="banner"
-            accept="image/"
-            className="w-full border-2 border-[#E5E7EB] rounded-3xl p-3"
-            onChange={(e) => handleFileChange(e)}
-          />
-          {preview && (
-            <img src={preview} alt="preview" height={100} width={100} />
-          )}
-          <button className="bg-[#6366F1] text-white font-semibold p-4 rounded-3xl w-fit">
-            Upload
-          </button>
-        </FormLayout>
-      </Card>
-    );
-  };
-  const ContentCard = () => {
-    return (
-      <Card>
-        <FormLayout title="Content">
-          <TextEditor
-            placeholder="Blog Content Here"
-            value={content}
-            onContentChange={setContent}
-          />
-
-          <div className="p-2 border rounded">
-            <strong>Preview:</strong>
-            <div dangerouslySetInnerHTML={{ __html: content }} />
-          </div>
-        </FormLayout>
-      </Card>
-    );
-  };
-  const MetaCard = () => {
-    return (
-      <Card>
-        <FormLayout title="Meta">
-          <Input name="seo_title" placeholder="SEO Title" />
-          <Input name="seo_description" placeholder="SEO Description" />
-          <Input name="keywords" placeholder="Keywords" />
-        </FormLayout>
-      </Card>
-    );
-  };
-
   return (
     <div className="flex flex-col gap-10">
-      <PageTitle>Create a New Blog</PageTitle>
+      {/* <PageTitle>Create a New Blog</PageTitle> */}
       <form className="flex flex-col gap-10" onSubmit={handleSubmit}>
         {/* Hello Admin Card  */}
-        <Card>
-          <div className="flex justify-between items-center">
-            <span className="text-[20px] font-semibold">Hello Admin!!!</span>
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                className="bg-[#1C2536] text-white font-semibold p-4 rounded-3xl"
-              >
-                Save
-              </button>
-              <button
-                // type="submit"
-                className="bg-[#6366F1] text-white font-semibold p-4 rounded-3xl"
-              >
-                Publish Now
-              </button>
-              <button className="bg-red-400/20 text-red-800 font-semibold p-4 rounded-3xl">
-                Cancel
-              </button>
+        <div className="sticky top-19 bg-white/20 backdrop-blur-sm">
+          <Card>
+            <div className="flex justify-between items-center  ">
+              <span className="text-[20px] font-semibold">
+                Create a New Blog
+              </span>
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  className="bg-[#1C2536] text-white font-semibold py-3 px-4 rounded-3xl"
+                >
+                  Save
+                </button>
+                <button
+                  // type="submit"
+                  className="bg-[#6366F1] text-white font-semibold py-3 px-4 rounded-3xl"
+                >
+                  Publish
+                </button>
+                <button className="bg-red-400/20 text-red-800 font-semibold py-3 px-4 rounded-3xl">
+                  Cancel
+                </button>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
 
         {/* <BasicDetailsCard /> */}
         <Card>
           <FormLayout title="Basic Details">
-            <Input name="title" placeholder="Blog Title" />
+            <div className="grid grid-cols-2 gap-4">
+              <Input name="title" placeholder="Blog Title" />{" "}
+              <DropDown
+                name="category"
+                placeholder="Select a category for the Blog"
+                options={options}
+              />
+            </div>
+
             <Input name="short_description" placeholder="Short Description" />
-            <DropDown
-              name="category"
-              placeholder="Select a category for the Blog"
-              options={options}
-            />
           </FormLayout>
         </Card>
 
@@ -212,7 +126,7 @@ export default function Page() {
             {preview && (
               <img src={preview} alt="preview" height={100} width={100} />
             )}
-            <button className="bg-[#6366F1] text-white font-semibold p-4 rounded-3xl w-fit">
+            <button className="bg-[#6366F1] text-white font-semibold py-3 px-4 rounded-3xl w-fit">
               Upload
             </button>
           </FormLayout>
@@ -225,21 +139,24 @@ export default function Page() {
               placeholder="Blog Content Starts here..."
               value={content}
               onContentChange={setContent}
+              rows={10}
             />
 
-            <div className="p-2 border rounded">
+            {/* <div className="p-2 border rounded">
               <strong>Preview:</strong>
               <div dangerouslySetInnerHTML={{ __html: content }} />
-            </div>
+            </div> */}
           </FormLayout>
         </Card>
 
         {/* <MetaCard /> */}
         <Card>
           <FormLayout title="Meta">
-            <Input name="seo_title" placeholder="SEO Title" />
+            <div className="grid grid-cols-2 gap-4">
+              <Input name="seo_title" placeholder="SEO Title" />
+              <Input name="keywords" placeholder="Keywords" />
+            </div>
             <Input name="seo_description" placeholder="SEO Description" />
-            <Input name="keywords" placeholder="Keywords" />
           </FormLayout>
         </Card>
       </form>

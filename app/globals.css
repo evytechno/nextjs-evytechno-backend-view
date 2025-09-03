@@ -20,3 +20,23 @@ body {
     scrollbar-width: none; /* Firefox */
   }
 }
+
+.quill {
+  border-radius: var(--radius-3xl) !important;
+
+  border: #e5e7eb !important;
+}
+
+.ql-toolbar {
+  /* border: solid #e5e7eb !important; */
+
+  border-top-left-radius: var(--radius-3xl) !important;
+  border-top-right-radius: var(--radius-3xl) !important;
+}
+.ql-container {
+  /* border: solid #e5e7eb !important; */
+
+  border-bottom-left-radius: var(--radius-3xl) !important;
+  border-bottom-right-radius: var(--radius-3xl) !important;
+  height: 80% !important;
+}
