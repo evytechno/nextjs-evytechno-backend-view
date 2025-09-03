@@ -8,9 +8,9 @@ import Image from "next/image";
 const links = [
   { name: "Home", href: "/dashboard", icon: home },
   { name: "Blog", href: "/dashboard/blog", icon: blog },
-  { name: "Service", href: "/dashboard/service", icon: "" },
-  { name: "Element", href: "/dashboard/element", icon: "" },
-  { name: "Pages", href: "/dashboard/pages", icon: "" },
+  { name: "Service", href: "/dashboard/service", icon: home },
+  { name: "Element", href: "/dashboard/element", icon: blog },
+  { name: "Pages", href: "/dashboard/pages", icon: home },
 ];
 
 export default function NavLinks() {

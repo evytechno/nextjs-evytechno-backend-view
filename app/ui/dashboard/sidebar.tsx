@@ -13,7 +13,7 @@ export default function SideBar() {
         className="text-white text-lg font-semibold  flex justify-center items-center max-w-full pt-4 "
         href="/dashboard"
       >
-        <Image src={logo} alt="logo" width={42} />
+        <Image src={logo} alt="logo" height={42} />
         {/* <span> EvyTechno</span> */}
       </Link>
       <hr className="text-white/40" />

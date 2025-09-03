@@ -12,7 +12,13 @@ import { toBase64 } from "@/app/utils/helpers/index";
 
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { z } from "zod";
 import { Button } from "@/app/ui/buttons/button";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { blogSchema } from "./blog.schema";
+
+type FormData = z.infer<typeof blogSchema>;
 
 export default function Page() {
   const [banner, setBanner] = useState<File | null>(null);
@@ -31,7 +37,7 @@ export default function Page() {
       name: "App Dev",
     },
   ]);
-  const [content, setContent] = useState(""); //Text editor content
+  const [content, setContent] = useState(""); //Text editor content}
 
   //Functions
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +48,7 @@ export default function Page() {
     console.log(banner);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
 
@@ -66,10 +72,20 @@ export default function Page() {
     }
   };
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(blogSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
+
   return (
     <div className="flex flex-col gap-10">
       {/* <PageTitle>Create a New Blog</PageTitle> */}
-      <form className="flex flex-col gap-10" onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-10" onSubmit={handleSubmit(onSubmit)}>
         {/* Hello Admin Card  */}
         <div className="sticky top-19 bg-white/20 backdrop-blur-sm">
           <Card>
@@ -97,15 +113,29 @@ export default function Page() {
         <Card>
           <FormLayout title="Basic Details">
             <div className="grid grid-cols-2 gap-4">
-              <Input name="title" placeholder="Blog Title" />{" "}
+              <Input
+                {...register("title")}
+                name="title"
+                placeholder="Blog Title"
+                required={true}
+                errors={errors}
+              />
+
               <DropDown
+                {...register("category")}
                 name="category"
                 placeholder="Select a category for the Blog"
                 options={options}
               />
             </div>
 
-            <Input name="short_description" placeholder="Short Description" />
+            <Input
+              {...register("short_description")}
+              name="short_description"
+              placeholder="Short Description"
+              required={true}
+              errors={errors}
+            />
           </FormLayout>
         </Card>
 
@@ -113,16 +143,23 @@ export default function Page() {
         <Card>
           <FormLayout title="Post Cover">
             <input
+              {...register("banner")}
               type="file"
               name="banner"
               accept="image/"
-              className="w-full border-2 border-[#E5E7EB] rounded-3xl p-3"
+              className={
+                "w-full border-2 border-[#E5E7EB] rounded-3xl p-3" +
+                (errors && errors["banner"] ? " border-red-500" : "")
+              }
               onChange={(e) => handleFileChange(e)}
             />
             {preview && (
               <img src={preview} alt="preview" height={100} width={100} />
             )}
             <Button className="bg-[#6366F1] w-fit">Upload</Button>
+            {errors && errors["banner"] && errors["banner"].message && (
+              <p className="text-red-500">{errors["banner"].message}</p>
+            )}
           </FormLayout>
         </Card>
 
@@ -130,10 +167,13 @@ export default function Page() {
         <Card>
           <FormLayout title="Content">
             <TextEditor
+              {...register("content")}
               placeholder="Blog Content Starts here..."
               value={content}
               onContentChange={setContent}
               rows={10}
+              name="content"
+              required={true}
             />
 
             {/* <div className="p-2 border rounded">
