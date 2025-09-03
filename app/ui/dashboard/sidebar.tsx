@@ -13,10 +13,10 @@ export default function SideBar() {
         className="text-white text-lg font-semibold  flex justify-center items-center max-w-full  "
         href="/dashboard"
       >
-        <Image src={logo} alt="logo" height={40} />
-        <span> EvyTechno</span>
+        <Image src={logo} alt="logo" width={100} />
+        {/* <span> EvyTechno</span> */}
       </Link>
-      <hr className="text-white/75" />
+      <hr className="text-white/40" />
 
       <div className="flex flex-col gap-2.5 items-start ">
         <NavLinks />

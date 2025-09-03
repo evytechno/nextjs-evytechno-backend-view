@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/app/ui/buttons/button";
 import Card from "@/app/ui/card/card";
 import DropDown from "@/app/ui/form-elements/dropdown";
 import FormLayout from "@/app/ui/form-elements/form-layout";
@@ -36,41 +37,36 @@ export default function Page() {
   };
   return (
     <div className="flex flex-col gap-10">
-      <PageTitle>Create a New Element</PageTitle>
+      {/* <PageTitle>Create a New Element</PageTitle> */}
       <form className="flex flex-col gap-10">
         {/* Hello Admin Card  */}
-        <Card>
-          <div className="flex justify-between items-center">
-            <span className="text-[20px] font-semibold">Hello Admin!!!</span>
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                className="bg-[#1C2536] text-white font-semibold p-4 rounded-3xl"
-              >
-                Save
-              </button>
-              <button
-                // type="submit"
-                className="bg-[#6366F1] text-white font-semibold p-4 rounded-3xl"
-              >
-                Publish Now
-              </button>
-              <button className="bg-red-400/20 text-red-800 font-semibold p-4 rounded-3xl">
-                Cancel
-              </button>
+        <div className="sticky top-19 bg-white/20 backdrop-blur-sm">
+          <Card>
+            <div className="flex justify-between items-center  ">
+              <span className="text-[20px] font-semibold">
+                Create a New Element
+              </span>
+              <div className="flex gap-3">
+                <Button type="submit" className="bg-[#1C2536]">
+                  Save
+                </Button>
+                <Button
+                  // type="submit"
+                  className="bg-[#6366F1]"
+                >
+                  Publish
+                </Button>
+                <Button className="bg-red-400/20 !text-red-800 ">Cancel</Button>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
         {/* <BasicDetailsCard /> */}
         <div className="flex gap-2">
           <Card>
             <FormLayout title="Basic Details">
               <Input name="name" placeholder="Element name" />
-              <TextEditor
-                value={content}
-                placeholder="Description of Element"
-                onContentChange={setContent}
-              />
+
               <DropDown
                 name="service"
                 placeholder="Service to which the element belongs"
@@ -97,6 +93,16 @@ export default function Page() {
             </FormLayout>
           </Card>
         </div>
+        <Card>
+          <FormLayout title="Description">
+            <TextEditor
+              value={content}
+              placeholder="Description of Element"
+              onContentChange={setContent}
+              rows={8}
+            />
+          </FormLayout>
+        </Card>
       </form>
     </div>
   );

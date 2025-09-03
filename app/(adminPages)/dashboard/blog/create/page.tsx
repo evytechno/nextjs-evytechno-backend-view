@@ -12,6 +12,7 @@ import { toBase64 } from "@/app/utils/helpers/index";
 
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { Button } from "@/app/ui/buttons/button";
 
 export default function Page() {
   const [banner, setBanner] = useState<File | null>(null);
@@ -77,21 +78,16 @@ export default function Page() {
                 Create a New Blog
               </span>
               <div className="flex gap-3">
-                <button
-                  type="submit"
-                  className="bg-[#1C2536] text-white font-semibold py-3 px-4 rounded-3xl"
-                >
+                <Button type="submit" className="bg-[#1C2536]">
                   Save
-                </button>
-                <button
+                </Button>
+                <Button
                   // type="submit"
-                  className="bg-[#6366F1] text-white font-semibold py-3 px-4 rounded-3xl"
+                  className="bg-[#6366F1]"
                 >
                   Publish
-                </button>
-                <button className="bg-red-400/20 text-red-800 font-semibold py-3 px-4 rounded-3xl">
-                  Cancel
-                </button>
+                </Button>
+                <Button className="bg-red-400/20 !text-red-800 ">Cancel</Button>
               </div>
             </div>
           </Card>
@@ -126,9 +122,7 @@ export default function Page() {
             {preview && (
               <img src={preview} alt="preview" height={100} width={100} />
             )}
-            <button className="bg-[#6366F1] text-white font-semibold py-3 px-4 rounded-3xl w-fit">
-              Upload
-            </button>
+            <Button className="bg-[#6366F1] w-fit">Upload</Button>
           </FormLayout>
         </Card>
 

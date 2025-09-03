@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/app/ui/buttons/button";
 import Card from "@/app/ui/card/card";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
@@ -33,31 +34,30 @@ export default function Page() {
 
   return (
     <div className="flex flex-col gap-10">
-      <PageTitle>Create a New Service</PageTitle>
+      {/* <PageTitle>Create a New Service</PageTitle> */}
       <form className="flex flex-col gap-10">
         {/* Hello Admin Card  */}
-        <Card>
-          <div className="flex justify-between items-center">
-            <span className="text-[20px] font-semibold">Hello Admin!!!</span>
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                className="bg-[#1C2536] text-white font-semibold p-4 rounded-3xl"
-              >
-                Save
-              </button>
-              <button
-                // type="submit"
-                className="bg-[#6366F1] text-white font-semibold p-4 rounded-3xl"
-              >
-                Publish Now
-              </button>
-              <button className="bg-red-400/20 text-red-800 font-semibold p-4 rounded-3xl">
-                Cancel
-              </button>
+        <div className="sticky top-19 bg-white/20 backdrop-blur-sm">
+          <Card>
+            <div className="flex justify-between items-center  ">
+              <span className="text-[20px] font-semibold">
+                Create a New Service
+              </span>
+              <div className="flex gap-3">
+                <Button type="submit" className="bg-[#1C2536]">
+                  Save
+                </Button>
+                <Button
+                  // type="submit"
+                  className="bg-[#6366F1]"
+                >
+                  Publish
+                </Button>
+                <Button className="bg-red-400/20 !text-red-800 ">Cancel</Button>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
         {/* <BasicDetailsCard /> */}
         <Card>
           <FormLayout title="Basic Details">
@@ -66,6 +66,7 @@ export default function Page() {
               placeholder="Description of the Service"
               value={content}
               onContentChange={setContent}
+              rows={10}
             />
           </FormLayout>
         </Card>
@@ -84,9 +85,7 @@ export default function Page() {
               {iconPreview && (
                 <img src={iconPreview} alt="preview" height={100} width={100} />
               )}
-              <button className="bg-[#6366F1] text-white font-semibold p-4 rounded-3xl w-fit">
-                Upload
-              </button>
+              <Button className="bg-[#6366F1] w-fit">Upload</Button>
             </FormLayout>
           </Card>
           <Card>
@@ -101,9 +100,7 @@ export default function Page() {
               {preview && (
                 <img src={preview} alt="preview" height={100} width={100} />
               )}
-              <button className="bg-[#6366F1] text-white font-semibold p-4 rounded-3xl w-fit">
-                Upload
-              </button>
+              <Button className="bg-[#6366F1] w-fit">Upload</Button>
             </FormLayout>
           </Card>
         </div>

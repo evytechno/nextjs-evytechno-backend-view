@@ -8,23 +8,27 @@ const DropDown = ({
   options: { _id: string; name: string }[];
 }) => {
   return (
-    <select
-      title={placeholder}
-      className="w-full border-2 border-[#E5E7EB] rounded-3xl p-3"
-      name={name}
-    >
-      <option value="none" disabled selected>
-        {placeholder}
-      </option>
-
-      {options.map((option) => {
-        return (
-          <option key={option._id} value={option._id}>
-            {option.name}
+    <div className="dropdown-menu">
+      <select
+        title={placeholder}
+        className="w-full border-2 border-[#E5E7EB] rounded-3xl p-3 "
+        name={name}
+      >
+        <div className="dropdown-options">
+          <option value="none" disabled selected>
+            {placeholder}
           </option>
-        );
-      })}
-    </select>
+
+          {options.map((option) => {
+            return (
+              <option key={option._id} value={option._id}>
+                {option.name}
+              </option>
+            );
+          })}
+        </div>
+      </select>
+    </div>
   );
 };
 

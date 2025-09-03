@@ -21,6 +21,8 @@ body {
   }
 }
 
+/* Quill Text editor customized */
+
 .quill {
   border-radius: var(--radius-3xl) !important;
 
@@ -38,5 +40,26 @@ body {
 
   border-bottom-left-radius: var(--radius-3xl) !important;
   border-bottom-right-radius: var(--radius-3xl) !important;
-  height: 80% !important;
+  height: calc(100% - 42px) !important;
+}
+
+.dropdown-menu select {
+  appearance: none !important; /* removes default arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  cursor: pointer;
+  background: url("../public/static/dropdown-arrow.svg");
+  /* background-image: url("data:image/svg+xml;utf8,<svg fill='%23333' height='24' width='24' viewBox='0 0 24 24'><path d='M7 10l5 5 5-5z'/></svg>") !important; */
+  background-repeat: no-repeat;
+  background-position: right 12px center; /* custom arrow position */
+}
+
+.dropdown-menu .dropdown-options option {
+  background-color: #e5e7eb;
+  border: 2px solid #ccc !important;
+
+  border-top: none;
+  border-bottom-left-radius: var(--radius-3xl) !important;
+  border-bottom-right-radius: var(--radius-3xl) !important;
 }
