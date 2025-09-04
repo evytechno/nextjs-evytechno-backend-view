@@ -49,3 +49,20 @@ export async function createBlog(data: FormData) {
     console.error("Error:", error);
   }
 }
+// to update a blog
+export async function updateBlog(id: string, data: FormData) {
+  try {
+    const resp = await fetch(`${BASE_URL}/${id}`, {
+      method: "PUT",
+      body: data,
+    });
+
+    if (!resp.ok) {
+      throw new Error("Failed to create blog");
+    } else {
+      return resp.json();
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}

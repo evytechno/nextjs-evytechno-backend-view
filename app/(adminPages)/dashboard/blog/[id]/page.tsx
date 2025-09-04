@@ -7,7 +7,7 @@ import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
 import PageTitle from "@/app/ui/text-comp/pageTitle";
-import { createBlog, fetchBlog } from "@/app/API/blog.route";
+import { createBlog, fetchBlog, updateBlog } from "@/app/API/blog.route";
 import { convertToFormData, toBase64 } from "@/app/utils/helpers/index";
 
 import { use, useEffect, useState } from "react";
@@ -66,7 +66,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       formData.append("banner", base64Image);
     }
     try {
-      const resp = await createBlog(formData);
+      const resp = await updateBlog(blogId, formData);
       Swal.fire({
         title: resp.succcess,
         text: resp.message,
@@ -96,6 +96,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       setOptions(servicesData.data);
     }
     getServices();
+    // to prefetch the blog data
     async function getData(id: string) {
       console.log(id);
       const data = await fetchBlog(id);
