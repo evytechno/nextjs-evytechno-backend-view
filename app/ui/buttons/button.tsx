@@ -2,7 +2,6 @@
 export const Button = ({
   children,
 
-  type,
   className,
   ...props
 }: {

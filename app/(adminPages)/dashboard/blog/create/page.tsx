@@ -39,6 +39,7 @@ export default function Page() {
     // },
   ]);
   const [content, setContent] = useState(""); //Text editor content}
+  const [isPublished, setIsPublished] = useState<boolean>(false);
 
   //Functions
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,12 +58,17 @@ export default function Page() {
 
     formData.append("content", content);
     formData.append("author", "68aee2860a6fba8d64ce8fda");
+    formData.append("is_published", String(isPublished));
 
     if (banner) {
       const base64Image = await toBase64(banner);
       formData.append("banner", base64Image);
     }
     try {
+      // console.log(isPublished);
+      if (isPublished === true) {
+        formData.append("date_published", new Date().toISOString());
+      }
       const resp = await createBlog(formData);
       Swal.fire({
         title: resp.succcess,
@@ -110,8 +116,9 @@ export default function Page() {
                   Save
                 </Button>
                 <Button
-                  // type="submit"
+                  type="submit"
                   className="bg-[#6366F1]"
+                  onClick={() => setIsPublished(true)}
                 >
                   Publish
                 </Button>

@@ -6,8 +6,8 @@ import DropDown from "@/app/ui/form-elements/dropdown";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
-import PageTitle from "@/app/ui/text-comp/pageTitle";
-import { createBlog, fetchBlog, updateBlog } from "@/app/API/blog.route";
+
+import { fetchBlog, updateBlog } from "@/app/API/blog.route";
 import { convertToFormData, toBase64 } from "@/app/utils/helpers/index";
 
 import { use, useEffect, useState } from "react";
@@ -39,6 +39,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     // },
   ]);
   const [content, setContent] = useState(""); //Text editor content}
+  const [isPublished, setIsPublished] = useState<boolean>(false);
 
   const [blogData, setBlogData] = useState({});
   const blogId = use(params).id;
@@ -60,12 +61,16 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
     formData.append("content", content);
     formData.append("author", "68aee2860a6fba8d64ce8fda");
+    formData.append("is_published", String(isPublished));
 
     if (banner) {
       const base64Image = await toBase64(banner);
       formData.append("banner", base64Image);
     }
     try {
+      if (isPublished === true) {
+        formData.append("date_published", new Date().toISOString());
+      }
       const resp = await updateBlog(blogId, formData);
       Swal.fire({
         title: resp.succcess,
@@ -126,8 +131,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                   Save
                 </Button>
                 <Button
-                  // type="submit"
+                  type="submit"
                   className="bg-[#6366F1]"
+                  onClick={() => setIsPublished(true)}
                 >
                   Publish
                 </Button>
