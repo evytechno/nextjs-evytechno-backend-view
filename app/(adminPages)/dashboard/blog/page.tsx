@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import AdminTable from "../../../ui/admin-table/admin-table";
 import PageHeader from "../../../ui/page-header/page-header";
-import { fetchBlogList } from "@/app/API/blog.route";
+import { fetchBlogList, updateBlog } from "@/app/API/blog.route";
 import { Button } from "@/app/ui/buttons/button";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import editIcon from "@/public/static/mingcute--edit-line.png";
+import deleteIcon from "@/public/static/mingcute--delete-line.png";
+import Swal from "sweetalert2";
 
 export default function Page() {
   const [tableData, setTableData] = useState([]);
@@ -22,8 +24,10 @@ export default function Page() {
     {
       key: "category",
       label: "Category",
-      render: (value: string) => {
-        return <span className="text-[#6C737F]">{value}</span>;
+      render: (value) => {
+        return (
+          <span className="text-[#6C737F]">{value ? value.name : "-"}</span>
+        );
       },
     },
     {
@@ -53,25 +57,6 @@ export default function Page() {
       },
     },
     {
-      key: "_id",
-      label: "Actions",
-      render: (value: string) => {
-        return (
-          <>
-            <Button
-              type="button"
-              onClick={(e) => {
-                redirect(`/dashboard/blog/${value}`);
-              }}
-              className="bg-[#6366F1] !p-1 !rounded-lg"
-            >
-              <Image src={editIcon} alt="Edit" height={24} />
-            </Button>
-          </>
-        );
-      },
-    },
-    {
       key: "is_published",
       label: "Status",
       render: (value: boolean) => {
@@ -87,6 +72,34 @@ export default function Page() {
               </span>
             )}
           </span>
+        );
+      },
+    },
+    {
+      key: "_id",
+      label: "Actions",
+      render: (value: string) => {
+        return (
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              onClick={() => {
+                redirect(`/dashboard/blog/${value}`);
+              }}
+              className="bg-[#6366F1] !p-1 !rounded-lg"
+            >
+              <Image src={editIcon} alt="Edit" height={24} />
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                onDelete(value);
+              }}
+              className="bg-[#AF2B0D] !p-1 !rounded-lg"
+            >
+              <Image src={deleteIcon} alt="Delete" height={24} />
+            </Button>
+          </div>
         );
       },
     },
@@ -115,6 +128,32 @@ export default function Page() {
     console.log(blogList);
     setTableData(blogList.data);
   }
+
+  const onDelete = async (blogId: string) => {
+    // e.preventDefault;
+    const formData = new FormData();
+
+    formData.append("is_deleted", String(true));
+    console.log(blogId);
+
+    try {
+      const resp = await updateBlog(blogId, formData);
+
+      const newTable = tableData.filter((blog) => {
+        return blog._id !== blogId;
+      });
+      setTableData([...newTable]);
+      Swal.fire({
+        title: "Deleted",
+        text: "Blog Deleted Successfully",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } catch (error) {
+      console.error("ERROR : ", error);
+    }
+  };
+
   useEffect(() => {
     getData();
   }, []);
