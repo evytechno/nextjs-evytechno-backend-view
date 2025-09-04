@@ -10,13 +10,14 @@ import PageTitle from "@/app/ui/text-comp/pageTitle";
 import { createBlog } from "@/app/API/blog.route";
 import { convertToFormData, toBase64 } from "@/app/utils/helpers/index";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { z } from "zod";
 import { Button } from "@/app/ui/buttons/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { blogSchema } from "./blog.schema";
+import { fetchServiceList } from "@/app/API/services.route";
 
 type FormData = z.infer<typeof blogSchema>;
 
@@ -24,18 +25,18 @@ export default function Page() {
   const [banner, setBanner] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [options, setOptions] = useState([
-    {
-      _id: "68ac4ccaf6405d14145c26be",
-      name: "Web Dev",
-    },
-    {
-      _id: "68ac4cf5f6405d14145c26c2",
-      name: "SEO",
-    },
-    {
-      _id: "68ac4d6c451cbebaa7a25da6",
-      name: "App Dev",
-    },
+    // {
+    //   _id: "68ac4ccaf6405d14145c26be",
+    //   name: "Web Dev",
+    // },
+    // {
+    //   _id: "68ac4cf5f6405d14145c26c2",
+    //   name: "SEO",
+    // },
+    // {
+    //   _id: "68ac4d6c451cbebaa7a25da6",
+    //   name: "App Dev",
+    // },
   ]);
   const [content, setContent] = useState(""); //Text editor content}
 
@@ -83,6 +84,15 @@ export default function Page() {
     mode: "onChange",
     reValidateMode: "onChange",
   });
+
+  useEffect(() => {
+    async function getServices() {
+      const servicesData = await fetchServiceList();
+      console.log(servicesData);
+      setOptions(servicesData.data);
+    }
+    getServices();
+  }, []);
 
   return (
     <div className="flex flex-col gap-10">

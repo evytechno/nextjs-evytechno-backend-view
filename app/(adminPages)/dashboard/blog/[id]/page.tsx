@@ -17,6 +17,7 @@ import { Button } from "@/app/ui/buttons/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { blogSchema } from "./blog.schema";
+import { fetchServiceList } from "@/app/API/services.route";
 
 type FormData = z.infer<typeof blogSchema>;
 
@@ -24,18 +25,18 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [banner, setBanner] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [options, setOptions] = useState([
-    {
-      _id: "68ac4ccaf6405d14145c26be",
-      name: "Web Dev",
-    },
-    {
-      _id: "68ac4cf5f6405d14145c26c2",
-      name: "SEO",
-    },
-    {
-      _id: "68ac4d6c451cbebaa7a25da6",
-      name: "App Dev",
-    },
+    // {
+    //   _id: "68ac4ccaf6405d14145c26be",
+    //   name: "Web Dev",
+    // },
+    // {
+    //   _id: "68ac4cf5f6405d14145c26c2",
+    //   name: "SEO",
+    // },
+    // {
+    //   _id: "68ac4d6c451cbebaa7a25da6",
+    //   name: "App Dev",
+    // },
   ]);
   const [content, setContent] = useState(""); //Text editor content}
 
@@ -89,6 +90,12 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   });
 
   useEffect(() => {
+    async function getServices() {
+      const servicesData = await fetchServiceList();
+      console.log(servicesData);
+      setOptions(servicesData.data);
+    }
+    getServices();
     async function getData(id: string) {
       console.log(id);
       const data = await fetchBlog(id);
