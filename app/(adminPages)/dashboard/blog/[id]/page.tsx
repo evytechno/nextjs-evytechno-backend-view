@@ -7,10 +7,10 @@ import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
 import PageTitle from "@/app/ui/text-comp/pageTitle";
-import { createBlog } from "@/app/API/blog.route";
+import { createBlog, fetchBlog } from "@/app/API/blog.route";
 import { convertToFormData, toBase64 } from "@/app/utils/helpers/index";
 
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { z } from "zod";
 import { Button } from "@/app/ui/buttons/button";
@@ -20,7 +20,7 @@ import { blogSchema } from "./blog.schema";
 
 type FormData = z.infer<typeof blogSchema>;
 
-export default function Page() {
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [banner, setBanner] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [options, setOptions] = useState([
@@ -38,6 +38,9 @@ export default function Page() {
     },
   ]);
   const [content, setContent] = useState(""); //Text editor content}
+
+  const [blogData, setBlogData] = useState({});
+  const blogId = use(params).id;
 
   //Functions
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,12 +80,26 @@ export default function Page() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(blogSchema),
     mode: "onChange",
     reValidateMode: "onChange",
   });
+
+  useEffect(() => {
+    async function getData(id: string) {
+      console.log(id);
+      const data = await fetchBlog(id);
+      await setBlogData({ ...data.data });
+      console.log("API DATA", data.data);
+      console.log("FUNCT BLOG DATA", blogData);
+      reset({ ...data.data });
+    }
+    getData(blogId);
+    console.log("BLOGDATA", blogData);
+  }, [reset]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -93,7 +110,7 @@ export default function Page() {
           <Card>
             <div className="flex justify-between items-center  ">
               <span className="text-[20px] font-semibold">
-                Create a New Blog
+                Update your Blog
               </span>
               <div className="flex gap-3">
                 <Button type="submit" className="bg-[#1C2536]">

@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import AdminTable from "../../../ui/admin-table/admin-table";
 import PageHeader from "../../../ui/page-header/page-header";
 import { fetchBlogList } from "@/app/API/blog.route";
+import { Button } from "@/app/ui/buttons/button";
+import { redirect } from "next/navigation";
+import Image from "next/image";
+import editIcon from "@/public/static/mingcute--edit-line.png";
 
 export default function Page() {
   const [tableData, setTableData] = useState([]);
@@ -44,6 +48,25 @@ export default function Page() {
                   month: "short",
                 })}, ${d.getFullYear()}`
               : "Will be published soon"}
+          </>
+        );
+      },
+    },
+    {
+      key: "_id",
+      label: "Actions",
+      render: (value: string) => {
+        return (
+          <>
+            <Button
+              type="button"
+              onClick={(e) => {
+                redirect(`/dashboard/blog/${value}`);
+              }}
+              className="bg-[#6366F1] !p-1 !rounded-lg"
+            >
+              <Image src={editIcon} alt="Edit" height={24} />
+            </Button>
           </>
         );
       },
