@@ -104,6 +104,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       console.log("API DATA", data.data);
       console.log("FUNCT BLOG DATA", blogData);
       reset({ ...data.data });
+      setContent(data.data.content);
     }
     getData(blogId);
     console.log("BLOGDATA", blogData);

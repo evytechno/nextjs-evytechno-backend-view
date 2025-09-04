@@ -16,18 +16,12 @@ export const blogSchema = z.object({
   // content: z.string(),
   // // .min(1, "Category is Required")
   // // .min(200, "At least 200 charecters are must"),
-  // seo_title: z
-  //   .string()
-  //   .min(1, "SEO Title is Required")
-  //   .min(3, "At least 3 charecters for SEO Title"),
-  // seo_description: z
-  //   .string()
-  //   .min(1, "SEO Description is Required")
-  //   .min(20, "At least 20 charecters for SEO Description"),
-  // keywords: z
-  //   .string()
-  //   .min(1, "Keywords is Required")
-  //   .min(3, "At least 3 charecters for Keywords"),
+  seo_title: z.string(),
+
+  seo_description: z.string(),
+
+  keywords: z.string(),
+
   // banner: z.any(),
   // // .refine(
   // //   (files) =>
