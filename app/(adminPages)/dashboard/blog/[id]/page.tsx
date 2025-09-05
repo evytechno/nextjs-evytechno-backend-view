@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { blogSchema } from "./blog.schema";
 import { fetchServiceList } from "@/app/API/services.route";
+import { redirect } from "next/navigation";
 
 type FormData = z.infer<typeof blogSchema>;
 
@@ -137,7 +138,12 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 >
                   Publish
                 </Button>
-                <Button className="bg-red-400/20 !text-red-800 ">Cancel</Button>
+                <Button
+                  className="bg-red-400/20 !text-red-800 "
+                  onClick={() => redirect(`/dashboard/blog`)}
+                >
+                  Cancel
+                </Button>
               </div>
             </div>
           </Card>

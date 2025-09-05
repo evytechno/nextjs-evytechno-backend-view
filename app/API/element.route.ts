@@ -19,3 +19,22 @@ export async function fetchElementList(service: string) {
     console.error("ERROR", error);
   }
 }
+
+export async function createElement(data: any) {
+  console.log("Data", data);
+  try {
+    const resp = await fetch(`${BASE_URL}`, {
+      method: "POST",
+      body: data,
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!resp.ok) {
+      throw new Error("Failed to create element");
+    } else {
+      return resp.json();
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
