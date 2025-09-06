@@ -67,34 +67,42 @@ export default function Page() {
     console.log(e);
     // e.preventDefault;
     // const formData = new FormData(e.target as HTMLFormElement);
-    const formData = convertToFormData(e);
-    console.log("FORMDATA", formData);
+    // const formData = convertToFormData(e);
 
-    formData.append("description", content);
-    formData.append("title", title);
-    formData.append("is_published", String(isPublished));
+    // formData.append("description", content);
+    // formData.append("title", title);
+    // formData.append("is_published", String(isPublished));
 
-    const data = {
-      name: e.name,
-      description: content,
-      title: title,
-      is_published: isPublished,
-    };
+    // const data = {
+    //   name: e.name,
+    //   description: content,
+    //   title: title,
+    //   is_published: isPublished,
+    // };
 
-    if (icon) {
-      // const base64Image = await toBase64(icon);
-      formData.append("icon", icon);
-    }
-    if (image) {
-      // const base64Image = await toBase64(image);
-      formData.append("image", image);
-    }
+    // if (icon) {
+    //   // const base64Image = await toBase64(icon);
+    //   formData.append("icon", icon);
+    // }
+    // if (image) {
+    //   // const base64Image = await toBase64(image);
+    //   formData.append("image", image);
+    // }
     try {
       // console.log(isPublished);
-      if (isPublished === true) {
-        formData.append("date_published", new Date().toISOString());
-      }
-      const resp = await createElement(JSON.stringify(data));
+      // if (isPublished === true) {
+      //   // formData.append("date_published", new Date().toISOString());
+      //   formData = { ...formData, date_published: new Date().toISOString() };
+      // }
+
+      const formData = {
+        ...e,
+        description: content,
+        title: title,
+        is_published: String(isPublished),
+      };
+      console.log("FORMDATA", formData);
+      const resp = await createElement(JSON.stringify(formData));
       Swal.fire({
         title: resp.succcess,
         text: resp.message,
@@ -130,7 +138,6 @@ export default function Page() {
       <form className="flex flex-col gap-10" onSubmit={handleSubmit(onSubmit)}>
         {/* Hello Admin Card  */}
         <div className="sticky top-19 bg-white/20 backdrop-blur-sm">
-          {console.log(errors)}
           <Card>
             <div className="flex justify-between items-center  ">
               <span className="text-[20px] font-semibold">
