@@ -33,11 +33,12 @@ export async function fetchBlog(id: string) {
 }
 
 // to create a new blog
-export async function createBlog(data: FormData) {
+export async function createBlog(data: any) {
   try {
     const resp = await fetch(`${BASE_URL}`, {
       method: "POST",
       body: data,
+      headers: { "Content-Type": "application/json" },
     });
 
     if (!resp.ok) {
