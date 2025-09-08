@@ -15,7 +15,7 @@ export default function Page() {
   const [tableData, setTableData] = useState([]);
   const tableHead = [
     {
-      key: "title",
+      key: "name",
       label: "Name",
       render: (value: string) => {
         return <span className="font-semibold">{value}</span>;
@@ -31,8 +31,8 @@ export default function Page() {
       },
     },
     {
-      key: "date_created",
-      label: "Date Created",
+      key: "start_date",
+      label: "Start Date",
       render: (value: string) => {
         const d = new Date(value);
         return `${d.getDate()} ${d.toLocaleDateString("default", {
@@ -40,22 +40,7 @@ export default function Page() {
         })}, ${d.getFullYear()}`;
       },
     },
-    {
-      key: "date_published",
-      label: "Publish On",
-      render: (value: string) => {
-        const d = new Date(value);
-        return (
-          <>
-            {value !== null
-              ? `${d.getDate()} ${d.toLocaleDateString("default", {
-                  month: "short",
-                })}, ${d.getFullYear()}`
-              : "Will be published soon"}
-          </>
-        );
-      },
-    },
+
     {
       key: "is_published",
       label: "Status",
@@ -84,7 +69,7 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                redirect(`/dashboard/blog/${value}`);
+                redirect(`/dashboard/cases/${value}`);
               }}
               className="bg-[#6366F1] !p-1 !rounded-lg"
             >
@@ -108,25 +93,25 @@ export default function Page() {
   const tableDataStatic = [
     {
       id: "abdasdkajd",
-      title: "ABCDEd",
-      date_created: "2025-08-28T06:42:48.838+00:00",
+      name: "ABCDEd",
+      start_date: "2025-08-28T06:42:48.838+00:00",
       is_published: true,
-      date_published: "2025-08-28T06:42:48.838+00:00",
+
       category: "SEO",
     },
     {
       id: "abdasdkajdasdasd",
-      title: "ABCDEd",
-      date_created: "2025-08-28T06:42:48.838+00:00",
+      name: "ABCDEd",
+      start_date: "2025-08-28T06:42:48.838+00:00",
       is_published: false,
-      date_published: "2025-08-28T06:42:48.838+00:00",
+
       category: "SEO",
     },
   ];
   async function getData() {
     const blogList = await fetchBlogList();
     console.log(blogList);
-    setTableData(blogList.data);
+    // setTableData(blogList.data);
   }
 
   const onDelete = async (blogId: string) => {
@@ -159,12 +144,13 @@ export default function Page() {
   }, []);
   return (
     <div className="flex flex-col gap-5">
-      <PageHeader name="Blogs" addlink="./blog/create" />
-      {tableData.length === 0 ? (
+      <PageHeader name="Case Studies" addlink="./cases/create" />
+      {/* {tableData.length === 0 ? (
         <span>No Data</span>
       ) : (
         <AdminTable tableHead={tableHead} tableData={tableData} />
-      )}
+      )} */}
+      <AdminTable tableHead={tableHead} tableData={tableDataStatic} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchElementList } from "@/app/API/element.route";
+import { fetchElementList, updateElement } from "@/app/API/element.route";
 import AdminTable from "@/app/ui/admin-table/admin-table";
 import { Button } from "@/app/ui/buttons/button";
 import PageHeader from "@/app/ui/page-header/page-header";
@@ -110,23 +110,23 @@ export default function Page() {
     setTableData(elementList.data);
   }
 
-  const onDelete = async (blogId: string) => {
+  const onDelete = async (id: string) => {
     // e.preventDefault;
     const formData = new FormData();
 
     formData.append("is_deleted", String(true));
-    console.log(blogId);
+    console.log(id);
 
     try {
-      const resp = await updateBlog(blogId, formData);
+      const resp = await updateElement(id, formData);
 
-      const newTable = tableData.filter((blog) => {
-        return blog._id !== blogId;
+      const newTable = tableData.filter((element) => {
+        return element._id !== id;
       });
       setTableData([...newTable]);
       Swal.fire({
         title: "Deleted",
-        text: "Blog Deleted Successfully",
+        text: "Element Deleted Successfully",
         icon: "success",
         confirmButtonText: "OK",
       });
