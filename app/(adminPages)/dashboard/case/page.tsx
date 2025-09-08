@@ -10,7 +10,7 @@ import Image from "next/image";
 import editIcon from "@/public/static/mingcute--edit-line.png";
 import deleteIcon from "@/public/static/mingcute--delete-line.png";
 import Swal from "sweetalert2";
-import { fetchCaseList } from "@/app/API/case.route";
+import { fetchCaseList, updateCase } from "@/app/API/case.route";
 
 export default function Page() {
   const [tableData, setTableData] = useState([]);
@@ -37,9 +37,11 @@ export default function Page() {
       label: "Start Date",
       render: (value: string) => {
         const d = new Date(value);
-        return `${d.getDate()} ${d.toLocaleDateString("default", {
-          month: "short",
-        })}, ${d.getFullYear()}`;
+        return value
+          ? `${d.getDate()} ${d.toLocaleDateString("default", {
+              month: "short",
+            })}, ${d.getFullYear()}`
+          : "-";
       },
     },
     {
@@ -47,9 +49,11 @@ export default function Page() {
       label: "End Date",
       render: (value: string) => {
         const d = new Date(value);
-        return `${d.getDate()} ${d.toLocaleDateString("default", {
-          month: "short",
-        })}, ${d.getFullYear()}`;
+        return value
+          ? `${d.getDate()} ${d.toLocaleDateString("default", {
+              month: "short",
+            })}, ${d.getFullYear()}`
+          : "-";
       },
     },
 
@@ -81,7 +85,7 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                redirect(`/dashboard/cases/${value}`);
+                redirect(`/dashboard/case/${value}`);
               }}
               className="bg-[#6366F1] !p-1 !rounded-lg"
             >
@@ -126,18 +130,15 @@ export default function Page() {
     setTableData(caseList.data);
   }
 
-  const onDelete = async (blogId: string) => {
-    // e.preventDefault;
-    const formData = new FormData();
-
-    formData.append("is_deleted", String(true));
-    console.log(blogId);
+  const onDelete = async (caseId: string) => {
+    const formData = { is_deleted: String(true) };
+    console.log(caseId);
 
     try {
-      const resp = await updateBlog(blogId, formData);
+      const resp = await updateCase(caseId, JSON.stringify(formData));
 
-      const newTable = tableData.filter((blog) => {
-        return blog._id !== blogId;
+      const newTable = tableData.filter((item) => {
+        return item._id !== caseId;
       });
       setTableData([...newTable]);
       Swal.fire({
@@ -156,7 +157,7 @@ export default function Page() {
   }, []);
   return (
     <div className="flex flex-col gap-5">
-      <PageHeader name="Case Studies" addlink="./cases/create" />
+      <PageHeader name="Case Studies" addlink="./case/create" />
       {tableData.length === 0 ? (
         <span>No Data</span>
       ) : (

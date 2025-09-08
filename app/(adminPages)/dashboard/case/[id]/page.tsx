@@ -7,27 +7,30 @@ import DropDown from "@/app/ui/form-elements/dropdown";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { caseSchena } from "./case.schema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
-import { createCase } from "@/app/API/case.route";
+import { createCase, fetchCase, updateCase } from "@/app/API/case.route";
 import { redirect } from "next/navigation";
 
 type FormData = z.infer<typeof caseSchena>;
 
-export default function Page() {
-  const [startType, setStartType] = useState<"text" | "date">("text");
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
+  const [startType, setStartType] = useState<"text" | "date">("date");
   const [startDate, setStartDate] = useState("");
-  const [endType, setEndType] = useState<"text" | "date">("text");
+  const [endType, setEndType] = useState<"text" | "date">("date");
   const [endDate, setEndDate] = useState("");
 
   const [content, setContent] = useState("");
 
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const [options, setOptions] = useState([]);
+
+  const [caseDate, setCaseData] = useState({});
+  const caseId = use(params).id;
 
   const onSubmit = async (e) => {
     console.log("data.....", e);
@@ -43,7 +46,7 @@ export default function Page() {
         end_date: endDate,
       };
       console.log("FORMDATA", formData);
-      const resp = await createCase(JSON.stringify(formData));
+      const resp = await updateCase(caseId, JSON.stringify(formData));
       Swal.fire({
         text: resp.message,
         icon: "success",
@@ -57,6 +60,7 @@ export default function Page() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(caseSchena),
@@ -71,7 +75,21 @@ export default function Page() {
       setOptions(servicesData.data);
     }
     getServices();
-  }, []);
+
+    async function getData(id: string) {
+      console.log(id);
+      const data = await fetchCase(id);
+      await setCaseData({ ...data.data });
+      console.log("API DATA", data.data);
+      reset({ ...data.data });
+
+      setStartDate(new Date(data.data.start_date).toISOString().split("T")[0]);
+      setEndDate(new Date(data.data.end_date).toISOString().split("T")[0]);
+
+      setIsPublished(data.data.is_published);
+    }
+    getData(caseId);
+  }, [reset]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -143,11 +161,12 @@ export default function Page() {
                 {...register("start_date")}
                 type={startType}
                 name="start_date"
+                value={startDate}
                 placeholder="Start Date"
-                onFocus={() => setStartType("date")}
-                onBlur={() => {
-                  if (!startDate) setStartType("text"); // reset back if empty
-                }}
+                // onFocus={() => setStartType("date")}
+                // onBlur={() => {
+                //   if (!startDate) setStartType("text"); // reset back if empty
+                // }}
                 onChange={(e) => {
                   setStartDate(e.target.value);
                 }}
@@ -157,10 +176,10 @@ export default function Page() {
                 type={endType}
                 name="end_date"
                 placeholder="End Date"
-                onFocus={() => setEndType("date")}
-                onBlur={() => {
-                  if (!endDate) setEndType("text"); // reset back if empty
-                }}
+                // onFocus={() => setEndType("date")}
+                // onBlur={() => {
+                //   if (!endDate) setEndType("text"); // reset back if empty
+                // }}
                 onChange={(e) => setEndDate(e.target.value)}
               />
             </div>
@@ -173,7 +192,7 @@ export default function Page() {
           <FormLayout title="Case Details">
             <TextEditor
               {...register("description")}
-              placeholder="Blog Content Starts here..."
+              placeholder="Case Details Starts here..."
               value={content}
               onContentChange={setContent}
               rows={10}

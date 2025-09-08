@@ -111,14 +111,11 @@ export default function Page() {
   }
 
   const onDelete = async (id: string) => {
-    // e.preventDefault;
-    const formData = new FormData();
-
-    formData.append("is_deleted", String(true));
+    const formData = { is_deleted: String(true) };
     console.log(id);
 
     try {
-      const resp = await updateElement(id, formData);
+      const resp = await updateElement(id, JSON.stringify(formData));
 
       const newTable = tableData.filter((element) => {
         return element._id !== id;

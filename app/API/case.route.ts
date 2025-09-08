@@ -20,7 +20,7 @@ export async function fetchCaseList(category: string) {
   }
 }
 
-export async function createElement(data: any) {
+export async function createCase(data: any) {
   console.log("Data", data);
   try {
     const resp = await fetch(`${BASE_URL}`, {
@@ -39,7 +39,7 @@ export async function createElement(data: any) {
   }
 }
 
-export async function updateElement(id: string, data: any) {
+export async function updateCase(id: string, data: any) {
   try {
     const resp = await fetch(`${BASE_URL}/${id}`, {
       method: "PUT",
@@ -57,7 +57,7 @@ export async function updateElement(id: string, data: any) {
   }
 }
 
-export async function fetchElement(id: string) {
+export async function fetchCase(id: string) {
   try {
     const resp = await fetch(`${BASE_URL}/?id=${id}`, {
       headers: { "Content-Type": "application/json" },

@@ -130,14 +130,11 @@ export default function Page() {
   }
 
   const onDelete = async (blogId: string) => {
-    // e.preventDefault;
-    const formData = new FormData();
-
-    formData.append("is_deleted", String(true));
+    const formData = { is_deleted: String(true) };
     console.log(blogId);
 
     try {
-      const resp = await updateBlog(blogId, formData);
+      const resp = await updateBlog(blogId, JSON.stringify(formData));
 
       const newTable = tableData.filter((blog) => {
         return blog._id !== blogId;
