@@ -41,7 +41,7 @@ export default function Page() {
   };
   ///upload image
   const handleUpload = async () => {
-    if (!banner) return alert("Please select a banner first!");
+    if (!banner) return alert("Please select a Image first!");
 
     const formData = new FormData();
     formData.append("file", banner);
@@ -68,7 +68,6 @@ export default function Page() {
 
       const resp = await createBlog(JSON.stringify(formData));
       Swal.fire({
-        title: resp.succcess,
         text: resp.message,
         icon: "success",
         confirmButtonText: "OK",

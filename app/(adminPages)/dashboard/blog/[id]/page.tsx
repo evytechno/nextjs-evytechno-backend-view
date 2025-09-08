@@ -71,7 +71,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
       const resp = await updateBlog(blogId, JSON.stringify(formData));
       Swal.fire({
-        title: resp.succcess,
         text: resp.message,
         icon: "success",
         confirmButtonText: "OK",

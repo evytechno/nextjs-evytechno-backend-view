@@ -19,31 +19,23 @@ import Swal from "sweetalert2";
 import { redirect } from "next/navigation";
 import { elementSchema } from "./element.schema";
 import { describe } from "node:test";
+import { uploadFile } from "@/app/API/upload.route";
+import Image from "next/image";
 
 type FormData = z.infer<typeof elementSchema>;
 
 export default function Page() {
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
+
   const [icon, setIcon] = useState<File | null>(null);
   const [iconPreview, setIconPreview] = useState<string | null>(null);
+  const [iconUrl, setIconUrl] = useState<string | null>(null);
 
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [options, setOptions] = useState([
-    // {
-    //   _id: "68ac4ccaf6405d14145c26be",
-    //   name: "Web Dev",
-    // },
-    // {
-    //   _id: "68ac4cf5f6405d14145c26c2",
-    //   name: "SEO",
-    // },
-    // {
-    //   _id: "68ac4d6c451cbebaa7a25da6",
-    //   name: "App Dev",
-    // },
-  ]);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [options, setOptions] = useState([]);
   const [isPublished, setIsPublished] = useState<boolean>(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,49 +54,46 @@ export default function Page() {
     console.log(icon);
   };
 
+  ///upload image
+  const handleUpload = async (name: string) => {
+    if (!icon && !image) return alert("Please select a file first!");
+
+    try {
+      const formData = new FormData();
+      if (name === "icon") {
+        formData.append("file", icon);
+      } else if (name === "image") {
+        formData.append("file", image);
+      }
+
+      const uploadedImage = await uploadFile(formData);
+      console.log(uploadedImage);
+      if (name === "icon") {
+        await setIconUrl(uploadedImage.file.url);
+      } else if (name === "image") {
+        await setImageUrl(uploadedImage.file.url);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const onSubmit = async (e) => {
     console.log("data.....", e);
     console.log(e);
-    // e.preventDefault;
-    // const formData = new FormData(e.target as HTMLFormElement);
-    // const formData = convertToFormData(e);
 
-    // formData.append("description", content);
-    // formData.append("title", title);
-    // formData.append("is_published", String(isPublished));
-
-    // const data = {
-    //   name: e.name,
-    //   description: content,
-    //   title: title,
-    //   is_published: isPublished,
-    // };
-
-    // if (icon) {
-    //   // const base64Image = await toBase64(icon);
-    //   formData.append("icon", icon);
-    // }
-    // if (image) {
-    //   // const base64Image = await toBase64(image);
-    //   formData.append("image", image);
-    // }
     try {
-      // console.log(isPublished);
-      // if (isPublished === true) {
-      //   // formData.append("date_published", new Date().toISOString());
-      //   formData = { ...formData, date_published: new Date().toISOString() };
-      // }
-
       const formData = {
         ...e,
         description: content,
         title: title,
         is_published: String(isPublished),
+        image: imageUrl,
+        icon: iconUrl,
       };
       console.log("FORMDATA", formData);
       const resp = await createElement(JSON.stringify(formData));
       Swal.fire({
-        title: resp.succcess,
         text: resp.message,
         icon: "success",
         confirmButtonText: "OK",
@@ -184,52 +173,82 @@ export default function Page() {
                 options={options}
                 errors={errors}
               />
+              <TextEditor
+                {...register("title")}
+                value={title}
+                placeholder="Title of Element"
+                onContentChange={setTitle}
+                rows={6}
+                required={true}
+                errors={errors}
+              />
             </FormLayout>
           </Card>
 
           <Card>
             <FormLayout title="Image and Icon ">
-              <input
-                {...register("image")}
-                type="file"
-                name="image"
-                accept="image/"
-                className="w-full border-2 border-[#E5E7EB] rounded-3xl p-3"
-                onChange={(e) => handleImageChange(e)}
-                placeholder="Choose the SUitable Image"
-              />
-              {preview && (
-                <img src={preview} alt="preview" height={100} width={100} />
-              )}
-              <input
-                {...register("icon")}
-                type="file"
-                name="icon"
-                accept="image/"
-                className="w-full border-2 border-[#E5E7EB] rounded-3xl p-3"
-                onChange={(e) => handleIconChange(e)}
-              />
-              {iconPreview && (
-                <img src={iconPreview} alt="preview" height={100} width={100} />
-              )}
-              {/* <button className="bg-[#6366F1] text-white font-semibold p-4 rounded-3xl w-fit">
-                Upload
-              </button> */}
+              <div className="flex gap-2 justify-between w-full ">
+                <div className="grid grid-rows-2 gap-5 items-center w-full">
+                  <input
+                    {...register("image")}
+                    type="file"
+                    name="image"
+                    accept="image/"
+                    className="w-full border-2 border-[#E5E7EB] rounded-3xl p-3"
+                    onChange={(e) => handleImageChange(e)}
+                    placeholder="Choose the SUitable Image"
+                  />
+                  <Button
+                    type="button"
+                    className="bg-[#6366F1] w-fit"
+                    onClick={() => handleUpload("image")}
+                  >
+                    Image Upload
+                  </Button>
+                </div>
+                {preview && (
+                  <Image
+                    src={preview}
+                    alt="preview"
+                    height={100}
+                    width={100}
+                    className="h-[100px] w-auto"
+                  />
+                )}
+              </div>
+              <div className="flex gap-2 justify-between w-full">
+                <div className="grid grid-rows-2 gap-5 items-center w-full">
+                  <input
+                    {...register("icon")}
+                    type="file"
+                    name="icon"
+                    accept="image/"
+                    className="w-full border-2 border-[#E5E7EB] rounded-3xl p-3"
+                    onChange={(e) => handleIconChange(e)}
+                  />
+                  <Button
+                    type="button"
+                    className="bg-[#6366F1] w-fit"
+                    onClick={() => handleUpload("icon")}
+                  >
+                    Icon Upload
+                  </Button>
+                </div>
+                {iconPreview && (
+                  <Image
+                    src={iconPreview}
+                    alt="preview"
+                    height={100}
+                    width={100}
+                    className="h-[100px] w-auto"
+                  />
+                )}
+              </div>
             </FormLayout>
           </Card>
         </div>
         <Card>
           <FormLayout title="Title and Description">
-            <TextEditor
-              {...register("title")}
-              value={title}
-              placeholder="Title of Element"
-              onContentChange={setTitle}
-              rows={4}
-              required={true}
-              errors={errors}
-            />
-
             <TextEditor
               {...register("description")}
               value={content}
