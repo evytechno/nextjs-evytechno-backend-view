@@ -16,7 +16,7 @@ export default function Page() {
   const tableHead = [
     {
       key: "title",
-      label: "Name",
+      label: "Blog Title",
       render: (value: string) => {
         return <span className="font-semibold">{value}</span>;
       },
