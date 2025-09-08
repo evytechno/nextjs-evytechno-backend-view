@@ -51,11 +51,12 @@ export async function createBlog(data: any) {
   }
 }
 // to update a blog
-export async function updateBlog(id: string, data: FormData) {
+export async function updateBlog(id: string, data: any) {
   try {
     const resp = await fetch(`${BASE_URL}/${id}`, {
       method: "PUT",
       body: data,
+      headers: { "Content-Type": "application/json" },
     });
 
     if (!resp.ok) {

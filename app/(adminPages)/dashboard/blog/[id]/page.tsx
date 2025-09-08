@@ -19,26 +19,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { blogSchema } from "./blog.schema";
 import { fetchServiceList } from "@/app/API/services.route";
 import { redirect } from "next/navigation";
+import { uploadFile } from "@/app/API/upload.route";
 
 type FormData = z.infer<typeof blogSchema>;
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [banner, setBanner] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [options, setOptions] = useState([
-    // {
-    //   _id: "68ac4ccaf6405d14145c26be",
-    //   name: "Web Dev",
-    // },
-    // {
-    //   _id: "68ac4cf5f6405d14145c26c2",
-    //   name: "SEO",
-    // },
-    // {
-    //   _id: "68ac4d6c451cbebaa7a25da6",
-    //   name: "App Dev",
-    // },
-  ]);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [options, setOptions] = useState([]);
   const [content, setContent] = useState(""); //Text editor content}
   const [isPublished, setIsPublished] = useState<boolean>(false);
 
@@ -54,25 +43,33 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     console.log(banner);
   };
 
-  const onSubmit = async (e) => {
-    // e.preventDefault;
-    // const formData = new FormData(e.target as HTMLFormElement);
-    const formData = convertToFormData(e);
-    console.log("FORMDATA", formData);
+  const handleUpload = async () => {
+    if (!banner) return alert("Please select a banner first!");
 
-    formData.append("content", content);
-    formData.append("author", "68aee2860a6fba8d64ce8fda");
-    formData.append("is_published", String(isPublished));
+    const formData = new FormData();
+    formData.append("file", banner);
 
-    if (banner) {
-      const base64Image = await toBase64(banner);
-      formData.append("banner", base64Image);
-    }
     try {
-      if (isPublished === true) {
-        formData.append("date_published", new Date().toISOString());
-      }
-      const resp = await updateBlog(blogId, formData);
+      const uploadedImage = await uploadFile(formData);
+      console.log(uploadedImage);
+      await setImageUrl(uploadedImage.file.url);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onSubmit = async (e) => {
+    try {
+      const formData = {
+        ...e,
+        content: content,
+        author: "68aee2860a6fba8d64ce8fda",
+        is_published: isPublished,
+        banner: imageUrl,
+      };
+      console.log("FORMDATA", formData);
+
+      const resp = await updateBlog(blogId, JSON.stringify(formData));
       Swal.fire({
         title: resp.succcess,
         text: resp.message,
@@ -110,6 +107,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       console.log("API DATA", data.data);
       console.log("FUNCT BLOG DATA", blogData);
       reset({ ...data.data });
+      setPreview(data.data.banner);
       setContent(data.data.content);
     }
     getData(blogId);
@@ -196,7 +194,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             {preview && (
               <img src={preview} alt="preview" height={100} width={100} />
             )}
-            {/* <Button className="bg-[#6366F1] w-fit">Upload</Button> */}
+            <Button
+              type="button"
+              className="bg-[#6366F1] w-fit"
+              onClick={handleUpload}
+            >
+              Upload
+            </Button>
             {errors && errors["banner"] && errors["banner"].message && (
               <p className="text-red-500">{errors["banner"].message}</p>
             )}
