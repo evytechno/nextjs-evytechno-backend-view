@@ -38,3 +38,36 @@ export async function createElement(data: any) {
     console.error("Error:", error);
   }
 }
+
+export async function updateElement(id: string, data: any) {
+  try {
+    const resp = await fetch(`${BASE_URL}/${id}`, {
+      method: "PUT",
+      body: data,
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!resp.ok) {
+      throw new Error("Failed to create blog");
+    } else {
+      return resp.json();
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+export async function fetchElement(id: string) {
+  try {
+    const resp = await fetch(`${BASE_URL}/?id=${id}`, {
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!resp.ok) {
+      throw new Error("Failed to fetch element");
+    } else {
+      return resp.json();
+    }
+  } catch (error) {
+    console.error("ERROR", error);
+  }
+}

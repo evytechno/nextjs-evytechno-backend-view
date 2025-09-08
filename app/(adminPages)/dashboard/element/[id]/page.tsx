@@ -1,6 +1,6 @@
 "use client";
 
-import { createElement } from "@/app/API/element.route";
+import { fetchElement, updateElement } from "@/app/API/element.route";
 import { fetchServiceList } from "@/app/API/services.route";
 import { Button } from "@/app/ui/buttons/button";
 import Card from "@/app/ui/card/card";
@@ -8,23 +8,21 @@ import DropDown from "@/app/ui/form-elements/dropdown";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
-import PageTitle from "@/app/ui/text-comp/pageTitle";
-import { convertToFormData, toBase64 } from "@/app/utils/helpers";
 import { z } from "zod";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { redirect } from "next/navigation";
 import { elementSchema } from "./element.schema";
-import { describe } from "node:test";
+
 import { uploadFile } from "@/app/API/upload.route";
 import Image from "next/image";
 
 type FormData = z.infer<typeof elementSchema>;
 
-export default function Page() {
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
 
@@ -37,6 +35,9 @@ export default function Page() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [options, setOptions] = useState([]);
   const [isPublished, setIsPublished] = useState<boolean>(false);
+
+  const [elementData, setElementData] = useState({});
+  const elementId = use(params).id;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -92,7 +93,7 @@ export default function Page() {
         icon: iconUrl,
       };
       console.log("FORMDATA", formData);
-      const resp = await createElement(JSON.stringify(formData));
+      const resp = await updateElement(elementId, JSON.stringify(formData));
       Swal.fire({
         text: resp.message,
         icon: "success",
@@ -106,6 +107,7 @@ export default function Page() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(elementSchema),
@@ -120,6 +122,22 @@ export default function Page() {
       setOptions(servicesData.data);
     }
     getServices();
+
+    async function getData(id: string) {
+      console.log(id);
+      const data = await fetchElement(id);
+      await setElementData({ ...data.data });
+      console.log("API DATA", data.data);
+      reset({ ...data.data });
+      setIconPreview(data.data.icon);
+      setIconUrl(data.data.icon);
+      setPreview(data.data.image);
+      setImageUrl(data.data.image);
+      setContent(data.data.description);
+      setTitle(data.data.title);
+      setIsPublished(data.data.is_published);
+    }
+    getData(elementId);
   }, []);
   return (
     <div className="flex flex-col gap-10">
@@ -130,7 +148,7 @@ export default function Page() {
           <Card>
             <div className="flex justify-between items-center  ">
               <span className="text-[20px] font-semibold">
-                Create a New Element
+                Update the Element
               </span>
               <div className="flex gap-3">
                 <Button type="submit" className="bg-[#1C2536]">

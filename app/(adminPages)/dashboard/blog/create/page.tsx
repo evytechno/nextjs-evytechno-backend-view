@@ -163,30 +163,34 @@ export default function Page() {
         {/* <PostCoverCard /> */}
         <Card>
           <FormLayout title="Post Cover">
-            <input
-              {...register("banner")}
-              type="file"
-              name="banner"
-              accept="image/"
-              className={
-                "w-full border-2 border-[#E5E7EB] rounded-3xl p-3" +
-                (errors && errors["banner"] ? " border-red-500" : "")
-              }
-              onChange={(e) => handleFileChange(e)}
-            />
-            {preview && (
-              <img src={preview} alt="preview" height={100} width={100} />
-            )}
-            <Button
-              type="button"
-              className="bg-[#6366F1] w-fit"
-              onClick={handleUpload}
-            >
-              Upload
-            </Button>
-            {errors && errors["banner"] && errors["banner"].message && (
-              <p className="text-red-500">{errors["banner"].message}</p>
-            )}
+            <div className="flex gap-2 justify-between w-full ">
+              <div className="grid grid-rows-2 gap-5 items-center w-full">
+                <input
+                  {...register("banner")}
+                  type="file"
+                  name="banner"
+                  accept="image/"
+                  className={
+                    "w-full border-2 border-[#E5E7EB] rounded-3xl p-3" +
+                    (errors && errors["banner"] ? " border-red-500" : "")
+                  }
+                  onChange={(e) => handleFileChange(e)}
+                />
+                <Button
+                  type="button"
+                  className="bg-[#6366F1] w-fit"
+                  onClick={handleUpload}
+                >
+                  Upload
+                </Button>
+              </div>
+              {preview && (
+                <img src={preview} alt="preview" height={100} width={100} />
+              )}
+              {errors && errors["banner"] && errors["banner"].message && (
+                <p className="text-red-500">{errors["banner"].message}</p>
+              )}
+            </div>
           </FormLayout>
         </Card>
 
