@@ -138,7 +138,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       setIsPublished(data.data.is_published);
     }
     getData(elementId);
-  }, []);
+  }, [reset]);
   return (
     <div className="flex flex-col gap-10">
       {/* <PageTitle>Create a New Element</PageTitle> */}

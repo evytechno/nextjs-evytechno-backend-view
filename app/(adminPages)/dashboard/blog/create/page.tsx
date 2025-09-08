@@ -57,6 +57,9 @@ export default function Page() {
 
   const onSubmit = async (e) => {
     try {
+      if (isPublished) {
+        e = { ...e, date_published: new Date().toISOString() };
+      }
       const formData = {
         ...e,
         content: content,

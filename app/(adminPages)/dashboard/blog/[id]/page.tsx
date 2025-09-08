@@ -60,6 +60,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   const onSubmit = async (e) => {
     try {
+      if (isPublished) {
+        e = { ...e, date_published: new Date().toISOString() };
+      }
       const formData = {
         ...e,
         content: content,
