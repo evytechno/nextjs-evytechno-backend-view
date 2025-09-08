@@ -28,20 +28,7 @@ export default function Page() {
   const [preview, setPreview] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  const [options, setOptions] = useState([
-    // {
-    //   _id: "68ac4ccaf6405d14145c26be",
-    //   name: "Web Dev",
-    // },
-    // {
-    //   _id: "68ac4cf5f6405d14145c26c2",
-    //   name: "SEO",
-    // },
-    // {
-    //   _id: "68ac4d6c451cbebaa7a25da6",
-    //   name: "App Dev",
-    // },
-  ]);
+  const [options, setOptions] = useState([]);
   const [content, setContent] = useState(""); //Text editor content}
   const [isPublished, setIsPublished] = useState<boolean>(false);
 
@@ -74,7 +61,7 @@ export default function Page() {
         ...e,
         content: content,
         author: "68aee2860a6fba8d64ce8fda",
-        is_published: isPublished,
+        is_published: String(isPublished),
         banner: imageUrl,
       };
       console.log("FORMDATA", formData);
@@ -133,6 +120,7 @@ export default function Page() {
                   Publish
                 </Button>
                 <Button
+                  type="button"
                   className="bg-red-400/20 !text-red-800 "
                   onClick={() => redirect(`/dashboard/blog`)}
                 >

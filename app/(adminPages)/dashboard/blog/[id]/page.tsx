@@ -64,7 +64,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         ...e,
         content: content,
         author: "68aee2860a6fba8d64ce8fda",
-        is_published: isPublished,
+        is_published: String(isPublished),
         banner: imageUrl,
       };
       console.log("FORMDATA", formData);
@@ -108,7 +108,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       console.log("FUNCT BLOG DATA", blogData);
       reset({ ...data.data });
       setPreview(data.data.banner);
+      setImageUrl(data.data.banner);
       setContent(data.data.content);
+      setIsPublished(data.data.is_published);
     }
     getData(blogId);
     console.log("BLOGDATA", blogData);
@@ -132,11 +134,12 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 <Button
                   type="submit"
                   className="bg-[#6366F1]"
-                  onClick={() => setIsPublished(true)}
+                  onClick={async () => await setIsPublished(true)}
                 >
                   Publish
                 </Button>
                 <Button
+                  type="button"
                   className="bg-red-400/20 !text-red-800 "
                   onClick={() => redirect(`/dashboard/blog`)}
                 >
