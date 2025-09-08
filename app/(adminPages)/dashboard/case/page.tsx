@@ -3,16 +3,18 @@
 import { useEffect, useState } from "react";
 import AdminTable from "../../../ui/admin-table/admin-table";
 import PageHeader from "../../../ui/page-header/page-header";
-import { fetchBlogList, updateBlog } from "@/app/API/blog.route";
+
 import { Button } from "@/app/ui/buttons/button";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import editIcon from "@/public/static/mingcute--edit-line.png";
 import deleteIcon from "@/public/static/mingcute--delete-line.png";
 import Swal from "sweetalert2";
+import { fetchCaseList } from "@/app/API/case.route";
 
 export default function Page() {
   const [tableData, setTableData] = useState([]);
+  const [category, setCategory] = useState("");
   const tableHead = [
     {
       key: "name",
@@ -33,6 +35,16 @@ export default function Page() {
     {
       key: "start_date",
       label: "Start Date",
+      render: (value: string) => {
+        const d = new Date(value);
+        return `${d.getDate()} ${d.toLocaleDateString("default", {
+          month: "short",
+        })}, ${d.getFullYear()}`;
+      },
+    },
+    {
+      key: "end_date",
+      label: "End Date",
       render: (value: string) => {
         const d = new Date(value);
         return `${d.getDate()} ${d.toLocaleDateString("default", {
@@ -109,9 +121,9 @@ export default function Page() {
     },
   ];
   async function getData() {
-    const blogList = await fetchBlogList();
-    console.log(blogList);
-    // setTableData(blogList.data);
+    const caseList = await fetchCaseList(category);
+    console.log(caseList);
+    setTableData(caseList.data);
   }
 
   const onDelete = async (blogId: string) => {
@@ -145,12 +157,12 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-5">
       <PageHeader name="Case Studies" addlink="./cases/create" />
-      {/* {tableData.length === 0 ? (
+      {tableData.length === 0 ? (
         <span>No Data</span>
       ) : (
         <AdminTable tableHead={tableHead} tableData={tableData} />
-      )} */}
-      <AdminTable tableHead={tableHead} tableData={tableDataStatic} />
+      )}
+      {/* <AdminTable tableHead={tableHead} tableData={tableDataStatic} /> */}
     </div>
   );
 }
