@@ -30,7 +30,7 @@ export async function createCase(data: any) {
     });
 
     if (!resp.ok) {
-      throw new Error("Failed to create element");
+      throw new Error("Failed to create case");
     } else {
       return resp.json();
     }
@@ -48,7 +48,7 @@ export async function updateCase(id: string, data: any) {
     });
 
     if (!resp.ok) {
-      throw new Error("Failed to create blog");
+      throw new Error("Failed to create Case");
     } else {
       return resp.json();
     }
@@ -63,7 +63,7 @@ export async function fetchCase(id: string) {
       headers: { "Content-Type": "application/json" },
     });
     if (!resp.ok) {
-      throw new Error("Failed to fetch element");
+      throw new Error("Failed to fetch case");
     } else {
       return resp.json();
     }

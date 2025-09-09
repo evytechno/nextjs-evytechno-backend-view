@@ -122,7 +122,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       const data = await fetchService(id);
       await setServiceData({ ...data.data });
       console.log("API DATA", data.data);
-      console.log("FUNCT BLOG DATA", serviceData);
+      console.log("FUNCT Service DATA", serviceData);
       reset({ ...data.data });
       setPreview(data.data.banner);
       setImageUrl(data.data.banner);

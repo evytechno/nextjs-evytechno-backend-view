@@ -143,7 +143,7 @@ export default function Page() {
       setTableData([...newTable]);
       Swal.fire({
         title: "Deleted",
-        text: "Blog Deleted Successfully",
+        text: "Case Deleted Successfully",
         icon: "success",
         confirmButtonText: "OK",
       });

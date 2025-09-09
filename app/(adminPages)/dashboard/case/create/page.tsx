@@ -173,7 +173,7 @@ export default function Page() {
           <FormLayout title="Case Details">
             <TextEditor
               {...register("description")}
-              placeholder="Blog Content Starts here..."
+              placeholder="Case Content Starts here..."
               value={content}
               onContentChange={setContent}
               rows={10}

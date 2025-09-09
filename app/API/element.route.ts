@@ -48,7 +48,7 @@ export async function updateElement(id: string, data: any) {
     });
 
     if (!resp.ok) {
-      throw new Error("Failed to create blog");
+      throw new Error("Failed to create Element");
     } else {
       return resp.json();
     }
