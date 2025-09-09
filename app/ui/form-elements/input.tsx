@@ -4,6 +4,7 @@ const Input = ({
   type,
   required,
   errors,
+  className,
   ...props
 }: {
   name: string;
@@ -16,8 +17,8 @@ const Input = ({
     <div className="flex flex-col">
       <input
         className={
-          "w-full border-2 border-[#E5E7EB] rounded-3xl p-3" +
-          (errors && errors[name] ? " border-red-500" : "")
+          `w-full border-2 border-[#E5E7EB] rounded-3xl p-3 ${className}` +
+          (errors && errors[name] ? ` border-red-500` : ``)
         }
         name={name}
         placeholder={placeholder}

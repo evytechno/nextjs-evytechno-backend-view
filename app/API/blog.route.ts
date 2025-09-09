@@ -60,7 +60,7 @@ export async function updateBlog(id: string, data: any) {
     });
 
     if (!resp.ok) {
-      throw new Error("Failed to create blog");
+      throw new Error("Failed to update blog");
     } else {
       return resp.json();
     }

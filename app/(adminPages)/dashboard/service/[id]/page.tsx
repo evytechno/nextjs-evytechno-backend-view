@@ -6,7 +6,7 @@ import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
 import PageTitle from "@/app/ui/text-comp/pageTitle";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 
 import { z } from "zod";
 
@@ -14,12 +14,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { serviceSchema } from "./service.schema";
 import { redirect } from "next/navigation";
-import { createService } from "@/app/API/services.route";
+import {
+  createService,
+  fetchService,
+  updateService,
+} from "@/app/API/services.route";
 import Swal from "sweetalert2";
 
 type FormData = z.infer<typeof serviceSchema>;
 
-export default function Page() {
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [content, setContent] = useState("");
   const [banner, setBanner] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -32,6 +36,9 @@ export default function Page() {
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const [color1, setColor1] = useState("#000000");
   const [color2, setColor2] = useState("#000000");
+
+  const [serviceData, setServiceData] = useState({});
+  const serviceId = use(params).id;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -87,7 +94,7 @@ export default function Page() {
         color2: color2,
       };
       console.log("FORMDATA", formData);
-      const resp = await createService(JSON.stringify(formData));
+      const resp = await updateService(serviceId, JSON.stringify(formData));
       Swal.fire({
         text: resp.message,
         icon: "success",
@@ -101,13 +108,34 @@ export default function Page() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(serviceSchema),
     mode: "onChange",
     reValidateMode: "onChange",
   });
-  //Text editor content
+
+  useEffect(() => {
+    async function getData(id: string) {
+      console.log(id);
+      const data = await fetchService(id);
+      await setServiceData({ ...data.data });
+      console.log("API DATA", data.data);
+      console.log("FUNCT BLOG DATA", serviceData);
+      reset({ ...data.data });
+      setPreview(data.data.banner);
+      setImageUrl(data.data.banner);
+      setIconPreview(data.data.icon);
+      setIconUrl(data.data.icon);
+      setColor1(data.data.color1);
+      setColor2(data.data.color2);
+      setContent(data.data.description);
+      setIsPublished(data.data.is_published);
+    }
+    getData(serviceId);
+    console.log("servicedata", serviceData);
+  }, [reset]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -118,7 +146,7 @@ export default function Page() {
           <Card>
             <div className="flex justify-between items-center  ">
               <span className="text-[20px] font-semibold">
-                Create a New Service
+                Update your Service
               </span>
               <div className="flex gap-3">
                 <Button type="submit" className="bg-[#1C2536]">

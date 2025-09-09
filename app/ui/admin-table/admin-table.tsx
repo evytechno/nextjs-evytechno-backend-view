@@ -11,6 +11,7 @@ const AdminTable = ({
   tableHead: TypeTableHead[];
   tableData: any[];
 }) => {
+  console.log("Table", tableData);
   return (
     <table className="my-5 px-5 text-left !rounded-3xl shadow-md shadow-[#ccc]">
       <thead className="bg-[#F8F9FA] text-[#2F3746] !rounded-t-3xl border-b-2 border-[#000]/40">
