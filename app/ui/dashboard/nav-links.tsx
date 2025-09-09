@@ -11,6 +11,7 @@ const links = [
   { name: "Service", href: "/dashboard/service", icon: home },
   { name: "Cases", href: "/dashboard/case", icon: blog },
   { name: "Element", href: "/dashboard/element", icon: blog },
+  { name: "Settings", href: "/dashboard/settings", icon: blog },
   { name: "Pages", href: "/dashboard/pages", icon: home },
 ];
 
