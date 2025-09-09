@@ -1,5 +1,5 @@
 "use client";
-import { createPage } from "@/app/API/pages.route";
+import { createPage, fetchPage, updatePage } from "@/app/API/pages.route";
 import { uploadFile } from "@/app/API/upload.route";
 import { Button } from "@/app/ui/buttons/button";
 import Card from "@/app/ui/card/card";
@@ -8,23 +8,26 @@ import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
 import PageTitle from "@/app/ui/text-comp/pageTitle";
 import { redirect } from "next/navigation";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { PageSchema } from "./pages.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { z } from "zod";
+import { string, z } from "zod";
 
 type FormData = z.infer<typeof PageSchema>;
 
-export default function Page() {
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [content, setContent] = useState(""); //Text editor content
   const [pageTitle, setPageTitle] = useState(""); //Text editor content
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isPublished, setIsPublished] = useState<boolean>(false);
+
+  const [pageData, setPageData] = useState({});
+  const pageId = use(params).id;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -61,7 +64,7 @@ export default function Page() {
       };
       console.log("FORMDATA", formData);
 
-      const resp = await createPage(JSON.stringify(formData));
+      const resp = await updatePage(pageId, JSON.stringify(formData));
       Swal.fire({
         text: resp.message,
         icon: "success",
@@ -75,12 +78,28 @@ export default function Page() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(PageSchema),
     mode: "onChange",
     reValidateMode: "onChange",
   });
+
+  useEffect(() => {
+    async function getData(id: string) {
+      const data = await fetchPage(id);
+      await setPageData(data.data);
+      reset({ ...data.data });
+      setContent(data.data.description);
+      setPageTitle(data.data.title);
+      setImageUrl(data.data.image);
+      setPreview(data.data.image);
+      setIsPublished(data.data.is_published);
+    }
+
+    getData(pageId);
+  }, [reset]);
 
   return (
     <div className="flex flex-col gap-10">
