@@ -27,7 +27,7 @@ export default function Page() {
 
   const [email, setEmail] = useState<string>("");
 
-  const [mobile, setMobile] = useState<string>("");
+  const [mobile, setMobile] = useState<number>();
 
   const [settingsData, setSettingsData] = useState({});
   const [settingsId, setSettingsId] = useState("");
@@ -117,6 +117,8 @@ export default function Page() {
       setIconPreview(data.data.favicon);
       setIconUrl(data.data.favicon);
       setSettingsId(data.data._id);
+      setEmail(data.data.email);
+      setMobile(Number(data.data.mobile));
     }
     getData();
     console.log("settingsData", settingsData);
@@ -140,13 +142,13 @@ export default function Page() {
                 >
                   Publish
                 </Button> */}
-                <Button
+                {/* <Button
                   type="button"
                   className="bg-red-400/20 !text-red-800 "
                   onClick={() => redirect(`/dashboard/element`)}
                 >
                   Cancel
-                </Button>
+                </Button> */}
               </div>
             </div>
           </Card>

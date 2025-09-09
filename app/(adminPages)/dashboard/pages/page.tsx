@@ -129,7 +129,7 @@ export default function Page() {
   }, []);
   return (
     <div className="flex flex-col gap-5">
-      <PageHeader name="Services" addlink="./pages/create" />
+      <PageHeader name="Pages" addlink="./pages/create" />
       <AdminTable tableHead={tableHead} tableData={tableData} />
     </div>
   );

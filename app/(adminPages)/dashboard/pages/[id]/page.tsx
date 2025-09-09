@@ -109,9 +109,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         <div className="sticky top-19 bg-white/20 backdrop-blur-sm">
           <Card>
             <div className="flex justify-between items-center  ">
-              <span className="text-[20px] font-semibold">
-                Create a New Page
-              </span>
+              <span className="text-[20px] font-semibold">Update the Page</span>
               <div className="flex gap-3">
                 <Button type="submit" className="bg-[#1C2536]">
                   Save

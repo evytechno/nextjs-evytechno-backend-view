@@ -99,7 +99,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           <Card>
             <div className="flex justify-between items-center  ">
               <span className="text-[20px] font-semibold">
-                Create a Case Study
+                Update your Case Study
               </span>
               <div className="flex gap-3">
                 <Button type="submit" className="bg-[#1C2536]">
