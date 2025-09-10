@@ -24,17 +24,21 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -50 }}
         transition={{ duration: 0.3 }}
-        className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+        className="relative z-10 w-full max-w-2xl  rounded-2xl bg-white "
       >
         {/* Close button */}
-        <Button
-          onClick={onClose}
-          className="absolute right-3 top-3 text-gray-500 hover:text-gray-800"
-        >
-          <X size={20} />
-        </Button>
-
-        {children}
+        <div className=" p-4 border-b-2 border-b-[#ccc]">
+          <h1 className="font-semibold ">Preview</h1>
+          <Button
+            onClick={onClose}
+            className="absolute right-3 top-3 text-gray-500 hover:text-gray-800 "
+          >
+            <X size={20} color="black" />
+          </Button>
+        </div>
+        <div className="max-h-[90vh] overflow-y-auto no-scrollbar p-4">
+          {children}
+        </div>
       </motion.div>
     </div>
   );

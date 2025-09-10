@@ -25,6 +25,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [endDate, setEndDate] = useState("");
 
   const [content, setContent] = useState("");
+  const [category, setCategory] = useState("");
 
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const [options, setOptions] = useState([]);
@@ -44,6 +45,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         is_published: String(isPublished),
         start_date: startDate,
         end_date: endDate,
+        category: category,
       };
       console.log("FORMDATA", formData);
       const resp = await updateCase(caseId, JSON.stringify(formData));
@@ -82,6 +84,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       await setCaseData({ ...data.data });
       console.log("API DATA", data.data);
       reset({ ...data.data });
+      setCategory(data.data.category._id);
 
       setStartDate(new Date(data.data.start_date).toISOString().split("T")[0]);
       setEndDate(new Date(data.data.end_date).toISOString().split("T")[0]);
@@ -138,10 +141,11 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               />
 
               <DropDown
-                {...register("category")}
+                // {...register("category")}
                 name="category"
                 placeholder="Select a category for the Case"
                 options={options}
+                value={category}
               />
             </div>
             <Input

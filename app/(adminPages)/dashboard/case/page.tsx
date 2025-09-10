@@ -9,12 +9,24 @@ import { redirect } from "next/navigation";
 import Image from "next/image";
 import editIcon from "@/public/static/mingcute--edit-line.png";
 import deleteIcon from "@/public/static/mingcute--delete-line.png";
+import eyeIcon from "@/public/static/mingcute--eye-line.png";
 import Swal from "sweetalert2";
-import { fetchCaseList, updateCase } from "@/app/API/case.route";
+import { fetchCase, fetchCaseList, updateCase } from "@/app/API/case.route";
+import Modal from "@/app/ui/modal/modal";
+import Card from "@/app/ui/card/card";
 
 export default function Page() {
   const [tableData, setTableData] = useState([]);
   const [category, setCategory] = useState("");
+  const [modalData, setModalData] = useState<any>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  async function getModalData(id: string) {
+    const data = await fetchCase(id);
+    await setModalData({ ...data.data });
+    setModalOpen(true);
+  }
+
   const tableHead = [
     {
       key: "name",
@@ -82,6 +94,13 @@ export default function Page() {
       render: (value: string) => {
         return (
           <div className="flex gap-2">
+            <Button
+              type="button"
+              onClick={() => getModalData(value)}
+              className="bg-[#15a80d] !p-1 !rounded-lg"
+            >
+              <Image src={eyeIcon} alt="Edit" height={24} />
+            </Button>
             <Button
               type="button"
               onClick={() => {
@@ -164,6 +183,27 @@ export default function Page() {
         <AdminTable tableHead={tableHead} tableData={tableData} />
       )}
       {/* <AdminTable tableHead={tableHead} tableData={tableDataStatic} /> */}
+
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setModalData(null);
+        }}
+      >
+        {modalData && (
+          <div className="max-h-80vh overflow-y-auto space-y-4">
+            <h1 className="text-3xl font-bold">{modalData.name}</h1>
+            <span className="text-[#6C737F] text-sm">
+              Category: {modalData.category.name}
+            </span>
+            <div
+              className="prose mt-3  "
+              dangerouslySetInnerHTML={{ __html: modalData.description }}
+            />
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

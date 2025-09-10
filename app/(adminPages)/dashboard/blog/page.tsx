@@ -3,15 +3,27 @@
 import { useEffect, useState } from "react";
 import AdminTable from "../../../ui/admin-table/admin-table";
 import PageHeader from "../../../ui/page-header/page-header";
-import { fetchBlogList, updateBlog } from "@/app/API/blog.route";
+import { fetchBlog, fetchBlogList, updateBlog } from "@/app/API/blog.route";
 import { Button } from "@/app/ui/buttons/button";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import editIcon from "@/public/static/mingcute--edit-line.png";
 import deleteIcon from "@/public/static/mingcute--delete-line.png";
+import eyeIcon from "@/public/static/mingcute--eye-line.png";
+
 import Swal from "sweetalert2";
+import Modal from "@/app/ui/modal/modal";
+import Card from "@/app/ui/card/card";
 
 export default function Page() {
+  const [modalData, setModalData] = useState<any>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  async function getModalData(id: string) {
+    const data = await fetchBlog(id);
+    await setModalData({ ...data.data });
+    setModalOpen(true);
+  }
   const [tableData, setTableData] = useState([]);
   const tableHead = [
     {
@@ -81,6 +93,13 @@ export default function Page() {
       render: (value: string) => {
         return (
           <div className="flex gap-2">
+            <Button
+              type="button"
+              onClick={() => getModalData(value)}
+              className="bg-[#15a80d] !p-1 !rounded-lg"
+            >
+              <Image src={eyeIcon} alt="Edit" height={24} />
+            </Button>
             <Button
               type="button"
               onClick={() => {
@@ -162,6 +181,29 @@ export default function Page() {
       ) : (
         <AdminTable tableHead={tableHead} tableData={tableData} />
       )}
+
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setModalData(null);
+        }}
+      >
+        {modalData && (
+          <div className="max-h-80vh overflow-y-auto space-y-4">
+            <img src={modalData.banner} className="w-full h-auto" />
+            <div className="text-3xl font-bold ">{modalData.title}</div>
+
+            <span className="text-[#6C737F] text-sm">
+              Category: {modalData.category.name}
+            </span>
+            <div
+              className="prose mt-3 "
+              dangerouslySetInnerHTML={{ __html: modalData.content }}
+            />
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }
