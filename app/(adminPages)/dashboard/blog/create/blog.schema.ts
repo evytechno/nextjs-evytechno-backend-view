@@ -9,10 +9,10 @@ export const blogSchema = z.object({
     .string()
     .min(1, "Title is Required")
     .min(20, "At least 20 charecters for Short Description"),
-  category: z
-    .string()
-    .min(1, "Category is Required")
-    .refine((val) => val.length >= 1, { message: "Must choose a Category" }),
+  // category: z
+  //   .string()
+  //   .min(1, "Category is Required")
+  //   .refine((val) => val.length >= 1, { message: "Must choose a Category" }),
   // content: z.string(),
   // // .min(1, "Category is Required")
   // // .min(200, "At least 200 charecters are must"),

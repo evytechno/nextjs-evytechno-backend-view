@@ -30,6 +30,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [options, setOptions] = useState([]);
   const [content, setContent] = useState(""); //Text editor content}
   const [isPublished, setIsPublished] = useState<boolean>(false);
+  const [category, setCategory] = useState("");
 
   const [blogData, setBlogData] = useState({});
   const blogId = use(params).id;
@@ -69,6 +70,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         author: "68aee2860a6fba8d64ce8fda",
         is_published: String(isPublished),
         banner: imageUrl,
+        category: category,
       };
       console.log("FORMDATA", formData);
 
@@ -113,6 +115,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       setImageUrl(data.data.banner);
       setContent(data.data.content);
       setIsPublished(data.data.is_published);
+      setCategory(data.data.category._id);
     }
     getData(blogId);
     console.log("BLOGDATA", blogData);
@@ -165,10 +168,12 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               />
 
               <DropDown
-                {...register("category")}
+                // {...register("category")}
                 name="category"
                 placeholder="Select a category for the Blog"
                 options={options}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
               />
             </div>
 
@@ -224,7 +229,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               placeholder="Blog Content Starts here..."
               value={content}
               onContentChange={setContent}
-              rows={10}
+              rows={20}
               name="content"
               required={true}
             />

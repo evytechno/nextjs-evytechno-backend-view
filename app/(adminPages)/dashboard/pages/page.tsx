@@ -5,12 +5,22 @@ import PageHeader from "@/app/ui/page-header/page-header";
 import Image from "next/image";
 import editIcon from "@/public/static/mingcute--edit-line.png";
 import deleteIcon from "@/public/static/mingcute--delete-line.png";
+import eyeIcon from "@/public/static/mingcute--eye-line.png";
+
 import { redirect } from "next/navigation";
-import { fetchPageList, updatePage } from "@/app/API/pages.route";
+import { fetchPage, fetchPageList, updatePage } from "@/app/API/pages.route";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
+import Modal from "@/app/ui/modal/modal";
 
 export default function Page() {
+  const [modalData, setModalData] = useState<any>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  async function getModalData(id: string) {
+    const data = await fetchPage(id);
+    await setModalData({ ...data.data });
+    setModalOpen(true);
+  }
   const [tableData, setTableData] = useState([]);
 
   const tableHead = [
@@ -25,14 +35,24 @@ export default function Page() {
       key: "title",
       label: "Title",
       render: (value: string) => {
-        return <span className="font-sans">{value}</span>;
+        return (
+          <div
+            className="prose text-md line-clamp-2"
+            dangerouslySetInnerHTML={{ __html: value }}
+          />
+        );
       },
     },
     {
       key: "description",
       label: "Description",
       render: (value: string) => {
-        return <span className="text-sm">{value}</span>;
+        return (
+          <div
+            className="prose text-sm line-clamp-2"
+            dangerouslySetInnerHTML={{ __html: value }}
+          />
+        );
       },
     },
 
@@ -61,6 +81,13 @@ export default function Page() {
       render: (value: string) => {
         return (
           <div className="flex gap-2">
+            <Button
+              type="button"
+              onClick={() => getModalData(value)}
+              className="bg-[#15a80d] !p-1 !rounded-lg"
+            >
+              <Image src={eyeIcon} alt="Edit" height={24} />
+            </Button>
             <Button
               type="button"
               onClick={() => {
@@ -130,7 +157,40 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-5">
       <PageHeader name="Pages" addlink="./pages/create" />
-      <AdminTable tableHead={tableHead} tableData={tableData} />
+      {tableData.length === 0 ? (
+        <span>No Data</span>
+      ) : (
+        <AdminTable tableHead={tableHead} tableData={tableData} />
+      )}
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setModalData(null);
+        }}
+      >
+        {modalData && (
+          <div className="max-h-80vh overflow-y-auto space-y-4">
+            {modalData.image && (
+              <img src={modalData.image} className="w-full h-auto" />
+            )}
+            <div
+              className="prose text-3xl font-bold "
+              dangerouslySetInnerHTML={{ __html: modalData.title }}
+            />
+            <span className="text-[#6C737F] text-sm">{modalData.name}</span>
+            {/* {modalData.category && (
+              <span className="text-[#6C737F] text-sm">
+                Category: {modalData.category.name}
+              </span>
+            )} */}
+            <div
+              className="prose mt-3 "
+              dangerouslySetInnerHTML={{ __html: modalData.description }}
+            />
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

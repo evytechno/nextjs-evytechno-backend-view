@@ -1,6 +1,10 @@
 "use client";
 
-import { fetchElementList, updateElement } from "@/app/API/element.route";
+import {
+  fetchElement,
+  fetchElementList,
+  updateElement,
+} from "@/app/API/element.route";
 import AdminTable from "@/app/ui/admin-table/admin-table";
 import { Button } from "@/app/ui/buttons/button";
 import PageHeader from "@/app/ui/page-header/page-header";
@@ -10,12 +14,45 @@ import { useEffect, useState } from "react";
 
 import editIcon from "@/public/static/mingcute--edit-line.png";
 import deleteIcon from "@/public/static/mingcute--delete-line.png";
+import eyeIcon from "@/public/static/mingcute--eye-line.png";
+
 import DropDown from "@/app/ui/form-elements/dropdown";
 import Swal from "sweetalert2";
 import { fetchServiceList } from "@/app/API/services.route";
+import Modal from "@/app/ui/modal/modal";
 
 export default function Page() {
+  const [modalData, setModalData] = useState<any>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  async function getModalData(id: string) {
+    const data = await fetchElement(id);
+    await setModalData({ ...data.data });
+    setModalOpen(true);
+  }
+
   const tableHead = [
+    {
+      key: "icon",
+      label: "Image and Icon",
+      render: (value: string, data: any) => {
+        // console.log("data at table", data);
+
+        return (
+          <div className="flex gap-2">
+            {data.image && (
+              <img
+                src={data.image}
+                className="w-10 h-10 object-cover rounded-md border-2 border-[#cccccc70]"
+                alt="Image"
+              />
+            )}
+            {value && (
+              <img src={value} className="w-10 h-10 rounded-full" alt="Icon" />
+            )}
+          </div>
+        );
+      },
+    },
     {
       key: "name",
       label: "Element Name",
@@ -27,16 +64,22 @@ export default function Page() {
       key: "title",
       label: "Title",
       render: (value: string) => {
-        return <span className="font-semibold">{value}</span>;
+        // return <span className="font-semibold">{value}</span>;
+        return (
+          <div
+            className="prose  "
+            dangerouslySetInnerHTML={{ __html: value }}
+          />
+        );
       },
     },
-    {
-      key: "description",
-      label: "Description",
-      render: (value: string) => {
-        return <span className="text-sm line-clamp-2">{value}</span>;
-      },
-    },
+    // {
+    //   key: "description",
+    //   label: "Description",
+    //   render: (value: string) => {
+    //     return <span className="text-sm line-clamp-2">{value}</span>;
+    //   },
+    // },
     {
       key: "service",
       label: "Service",
@@ -50,6 +93,13 @@ export default function Page() {
       render: (value: string) => {
         return (
           <div className="flex gap-2">
+            <Button
+              type="button"
+              onClick={() => getModalData(value)}
+              className="bg-[#15a80d] !p-1 !rounded-lg"
+            >
+              <Image src={eyeIcon} alt="Edit" height={24} />
+            </Button>
             <Button
               type="button"
               onClick={() => {
@@ -164,6 +214,35 @@ export default function Page() {
       ) : (
         <AdminTable tableHead={tableHead} tableData={tableData} />
       )}
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setModalData(null);
+        }}
+      >
+        {modalData && (
+          <div className="max-h-80vh overflow-y-auto space-y-4">
+            {modalData.image && (
+              <img src={modalData.image} className="w-full h-auto" />
+            )}
+            <div
+              className="prose text-3xl font-bold "
+              dangerouslySetInnerHTML={{ __html: modalData.title }}
+            />
+            <span className="text-[#6C737F] text-sm">{modalData.name}</span>
+            {/* {modalData.category && (
+              <span className="text-[#6C737F] text-sm">
+                Category: {modalData.category.name}
+              </span>
+            )} */}
+            <div
+              className="prose mt-3 "
+              dangerouslySetInnerHTML={{ __html: modalData.description }}
+            />
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

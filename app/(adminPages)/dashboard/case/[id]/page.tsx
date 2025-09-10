@@ -86,9 +86,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       reset({ ...data.data });
       setCategory(data.data.category._id);
 
-      setStartDate(new Date(data.data.start_date).toISOString().split("T")[0]);
-      setEndDate(new Date(data.data.end_date).toISOString().split("T")[0]);
-
+      await setStartDate(
+        new Date(data.data.start_date).toISOString().split("T")[0]
+      );
+      await setEndDate(
+        new Date(data.data.end_date).toISOString().split("T")[0]
+      );
+      setContent(data.data.description);
       setIsPublished(data.data.is_published);
     }
     getData(caseId);
@@ -146,6 +150,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 placeholder="Select a category for the Case"
                 options={options}
                 value={category}
+                onChange={(e) => setCategory(e.target.value)}
               />
             </div>
             <Input
@@ -162,7 +167,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           <FormLayout title="Start and End Date">
             <div className="grid grid-cols-2 gap-4">
               <Input
-                {...register("start_date")}
+                // {...register("start_date")}
                 type={startType}
                 name="start_date"
                 value={startDate}
@@ -176,10 +181,11 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 }}
               />
               <Input
-                {...register("end_date")}
+                // {...register("end_date")}
                 type={endType}
                 name="end_date"
                 placeholder="End Date"
+                value={endDate}
                 // onFocus={() => setEndType("date")}
                 // onBlur={() => {
                 //   if (!endDate) setEndType("text"); // reset back if empty
@@ -195,7 +201,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         <Card>
           <FormLayout title="Case Details">
             <TextEditor
-              {...register("description")}
+              // {...register("description")}
               placeholder="Case Details Starts here..."
               value={content}
               onContentChange={setContent}

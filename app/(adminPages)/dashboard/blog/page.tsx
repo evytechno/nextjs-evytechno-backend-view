@@ -27,10 +27,36 @@ export default function Page() {
   const [tableData, setTableData] = useState([]);
   const tableHead = [
     {
+      key: "banner",
+      label: "Image",
+      render: (value: string) => {
+        return (
+          value && (
+            <div className="flex items-center justify-center">
+              <img
+                src={value}
+                className="h-25 w-25 object-cover rounded-md border-2 border-[#cccccc70]"
+              />
+            </div>
+          )
+        );
+      },
+    },
+    {
       key: "title",
       label: "Blog Title",
-      render: (value: string) => {
-        return <span className="font-semibold">{value}</span>;
+      render: (value: string, data: any) => {
+        return (
+          // <div className="flex gap-2">
+          //   {data.banner && (
+          //     <img
+          //       src={data.banner}
+          //       className="h-20 w-20 rounded-md border-2 border-[#cccccc70]"
+          //     />
+          //   )}
+          <span className="font-semibold">{value}</span>
+          // </div>
+        );
       },
     },
     {
@@ -92,7 +118,7 @@ export default function Page() {
       label: "Actions",
       render: (value: string) => {
         return (
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center justify-center">
             <Button
               type="button"
               onClick={() => getModalData(value)}
@@ -193,10 +219,11 @@ export default function Page() {
           <div className="max-h-80vh overflow-y-auto space-y-4">
             <img src={modalData.banner} className="w-full h-auto" />
             <div className="text-3xl font-bold ">{modalData.title}</div>
-
-            <span className="text-[#6C737F] text-sm">
-              Category: {modalData.category.name}
-            </span>
+            {modalData.category && (
+              <span className="text-[#6C737F] text-sm">
+                Category: {modalData.category.name}
+              </span>
+            )}
             <div
               className="prose mt-3 "
               dangerouslySetInnerHTML={{ __html: modalData.content }}

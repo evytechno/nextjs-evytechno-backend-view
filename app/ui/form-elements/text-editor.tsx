@@ -62,7 +62,7 @@ export default function TextEditor({
           menubar: "", // adds happy to the menu bar
         }}
         value={value}
-        onChange={onContentChange}
+        onEditorChange={(newValue) => onContentChange(newValue)}
       />
     </div>
   );

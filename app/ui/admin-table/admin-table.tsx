@@ -1,7 +1,7 @@
 type TypeTableHead = {
   label: string;
   key: string;
-  render: (value: any) => string;
+  render: (value: any, data: any) => string;
 };
 
 const AdminTable = ({
@@ -39,7 +39,7 @@ const AdminTable = ({
                     className="p-5 border-l-1 border-r-1  border-[#000]/5"
                   >
                     {colData.render
-                      ? colData.render(data[colData.key])
+                      ? colData.render(data[colData.key], data)
                       : data[colData.key]}
                   </td>
                 );

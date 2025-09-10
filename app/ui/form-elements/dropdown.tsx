@@ -4,9 +4,11 @@ const DropDown = ({
   options,
   required,
   errors,
+  value,
   ...props
 }: {
   name: string;
+  value?: string;
   placeholder: string;
   options: { _id: string; name: string }[];
   required?: boolean;
@@ -15,6 +17,7 @@ const DropDown = ({
   return (
     <div className="flex flex-col">
       <div className="dropdown-menu">
+        {/* {value} */}
         <select
           title={placeholder}
           className={
@@ -22,7 +25,8 @@ const DropDown = ({
             (errors && errors[name] ? " border-red-500" : "")
           }
           name={name}
-          defaultValue=""
+          value={value ? value : ""}
+          // defaultValue={""}
           required={required}
           {...props}
         >
