@@ -68,3 +68,19 @@ body {
 .tinymce-editor .tox-statusbar__branding {
   display: none !important;
 }
+.modal-data {
+  color: rgb(97, 97, 97) !important;
+}
+.modal-data h1 {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.modal-data h2 {
+  font-size: larger;
+  font-weight: bold;
+}
+.modal-data h3 {
+  font-size: large;
+  font-weight: bold;
+}

@@ -7,12 +7,27 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import editIcon from "@/public/static/mingcute--edit-line.png";
 import deleteIcon from "@/public/static/mingcute--delete-line.png";
-import { fetchServiceList, updateService } from "@/app/API/services.route";
+import eyeIcon from "@/public/static/mingcute--eye-line.png";
+
+import {
+  fetchService,
+  fetchServiceList,
+  updateService,
+} from "@/app/API/services.route";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import Modal from "@/app/ui/modal/modal";
 
 export default function Page() {
+  const [modalData, setModalData] = useState<any>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [tableData, setTableData] = useState([]);
+
+  async function getModalData(id: string) {
+    const data = await fetchService(id);
+    await setModalData({ ...data.data });
+    setModalOpen(true);
+  }
 
   const tableHead = [
     {
@@ -22,13 +37,45 @@ export default function Page() {
         return <span className="font-semibold">{value}</span>;
       },
     },
+
+    // {
+    //   key: "banner",
+    //   label: "Post Cover",
+    //   render: (value: string) => {
+    //     return <img src={value} className="w-10 h-10 rounded-full" />;
+    //   },
+    // },
+
     {
-      key: "description",
-      label: "Description",
-      render: (value: string) => {
-        return <span className="text-sm">{value}</span>;
+      key: "icon",
+      label: "Image and Icon",
+      render: (value: string, data: any) => {
+        // console.log("data at table", data);
+
+        return (
+          <div className="flex gap-2">
+            {data.banner && (
+              <img
+                src={data.banner}
+                className="w-10 h-10  object-cover rounded-md border-2 border-[#cccccc70]"
+                alt="Image"
+              />
+            )}
+            {value && (
+              <img src={value} className="w-10 h-10 rounded-full" alt="Icon" />
+            )}
+          </div>
+        );
       },
     },
+
+    // {
+    //   key: "description",
+    //   label: "Description",
+    //   render: (value: string) => {
+    //     return <span className="text-sm">{value}</span>;
+    //   },
+    // },
     {
       key: "is_published",
       label: "Status",
@@ -54,6 +101,13 @@ export default function Page() {
       render: (value: string) => {
         return (
           <div className="flex gap-2">
+            <Button
+              type="button"
+              onClick={() => getModalData(value)}
+              className="bg-[#15a80d] !p-1 !rounded-lg"
+            >
+              <Image src={eyeIcon} alt="Edit" height={24} />
+            </Button>
             <Button
               type="button"
               onClick={() => {
@@ -144,6 +198,28 @@ export default function Page() {
       ) : (
         <AdminTable tableHead={tableHead} tableData={tableData} />
       )}
+
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setModalData(null);
+        }}
+      >
+        {modalData && (
+          <div className="max-h-80vh overflow-y-auto space-y-4">
+            {modalData.banner && (
+              <img src={modalData.banner} className="w-full h-auto" />
+            )}
+            <div className="text-3xl font-bold ">{modalData.name}</div>
+
+            <div
+              className="prose mt-3 "
+              dangerouslySetInnerHTML={{ __html: modalData.description }}
+            />
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

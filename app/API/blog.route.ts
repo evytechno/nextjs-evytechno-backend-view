@@ -1,8 +1,10 @@
 import { baseUrl } from "./url";
 
-const BASE_URL = `${baseUrl}/blog`;
 // to fetch all the blogs
+const BASE_URL = `${baseUrl}/blog`;
 export async function fetchBlogList() {
+  console.log("baseUrl", baseUrl);
+
   try {
     const resp = await fetch(`${BASE_URL}`, {
       headers: { "Content-Type": "application/json" },

@@ -36,7 +36,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
             <X size={20} color="black" />
           </Button>
         </div>
-        <div className="max-h-[90vh] overflow-y-auto no-scrollbar p-4">
+        <div className="max-h-[90vh] overflow-y-auto no-scrollbar p-4 modal-data">
           {children}
         </div>
       </motion.div>
