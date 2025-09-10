@@ -25,6 +25,7 @@ export default function Page() {
   const [endDate, setEndDate] = useState("");
 
   const [content, setContent] = useState("");
+  const [category, setCategory] = useState("");
 
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const [options, setOptions] = useState([]);
@@ -41,6 +42,7 @@ export default function Page() {
         is_published: String(isPublished),
         start_date: startDate,
         end_date: endDate,
+        category: category,
       };
       console.log("FORMDATA", formData);
       const resp = await createCase(JSON.stringify(formData));
@@ -120,10 +122,12 @@ export default function Page() {
               />
 
               <DropDown
-                {...register("category")}
+                // {...register("category")}
                 name="category"
                 placeholder="Select a category for the Case"
                 options={options}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
               />
             </div>
             <Input
@@ -140,7 +144,7 @@ export default function Page() {
           <FormLayout title="Start and End Date">
             <div className="grid grid-cols-2 gap-4">
               <Input
-                {...register("start_date")}
+                // {...register("start_date")}
                 type={startType}
                 name="start_date"
                 placeholder="Start Date"
@@ -153,7 +157,7 @@ export default function Page() {
                 }}
               />
               <Input
-                {...register("end_date")}
+                // {...register("end_date")}
                 type={endType}
                 name="end_date"
                 placeholder="End Date"
@@ -172,7 +176,7 @@ export default function Page() {
         <Card>
           <FormLayout title="Case Details">
             <TextEditor
-              {...register("description")}
+              // {...register("description")}
               placeholder="Case Content Starts here..."
               value={content}
               onContentChange={setContent}

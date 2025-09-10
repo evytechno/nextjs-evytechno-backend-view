@@ -173,6 +173,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 placeholder="Select a category for the Blog"
                 options={options}
                 value={category}
+                onChange={(e) => setCategory(e.target.value)}
               />
             </div>
 

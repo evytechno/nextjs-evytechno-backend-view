@@ -28,6 +28,8 @@ export default function Page() {
   const [preview, setPreview] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
+  const [category, setCategory] = useState("");
+
   const [options, setOptions] = useState([]);
   const [content, setContent] = useState(""); //Text editor content}
   const [isPublished, setIsPublished] = useState<boolean>(false);
@@ -150,6 +152,8 @@ export default function Page() {
                 name="category"
                 placeholder="Select a category for the Blog"
                 options={options}
+                value={category}
+                onChange={setCategory}
               />
             </div>
 

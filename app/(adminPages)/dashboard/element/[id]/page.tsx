@@ -36,6 +36,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [options, setOptions] = useState([]);
   const [isPublished, setIsPublished] = useState<boolean>(false);
 
+  const [service, setService] = useState("");
+
   const [elementData, setElementData] = useState({});
   const elementId = use(params).id;
 
@@ -91,6 +93,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         is_published: String(isPublished),
         image: imageUrl,
         icon: iconUrl,
+        service: service,
       };
       console.log("FORMDATA", formData);
       const resp = await updateElement(elementId, JSON.stringify(formData));
@@ -136,6 +139,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       setContent(data.data.description);
       setTitle(data.data.title);
       setIsPublished(data.data.is_published);
+      setService(data.data.service);
     }
     getData(elementId);
   }, [reset]);
@@ -185,11 +189,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               />
 
               <DropDown
-                {...register("service")}
+                // {...register("service")}
                 name="service"
                 placeholder="Service to which the element belongs"
                 options={options}
                 errors={errors}
+                value={service}
+                onChange={(e) => setService(e.target.value)}
               />
               <TextEditor
                 {...register("title")}

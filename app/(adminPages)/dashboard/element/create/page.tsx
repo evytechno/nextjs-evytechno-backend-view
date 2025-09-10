@@ -38,6 +38,8 @@ export default function Page() {
   const [options, setOptions] = useState([]);
   const [isPublished, setIsPublished] = useState<boolean>(false);
 
+  const [service, setService] = useState("");
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImage(e.target.files[0]);
@@ -90,6 +92,7 @@ export default function Page() {
         is_published: String(isPublished),
         image: imageUrl,
         icon: iconUrl,
+        service: service,
       };
       console.log("FORMDATA", formData);
       const resp = await createElement(JSON.stringify(formData));
@@ -167,11 +170,13 @@ export default function Page() {
               />
 
               <DropDown
-                {...register("service")}
+                // {...register("service")}
                 name="service"
                 placeholder="Service to which the element belongs"
                 options={options}
                 errors={errors}
+                value={service}
+                onChange={(e) => setService(e.target.value)}
               />
               <TextEditor
                 {...register("title")}
