@@ -3,32 +3,34 @@
 import { useEffect, useState } from "react";
 import AdminTable from "../../../ui/admin-table/admin-table";
 import PageHeader from "../../../ui/page-header/page-header";
-import { fetchBlog, fetchBlogList, updateBlog } from "@/app/API/blog.route";
+
 import { Button } from "@/app/ui/buttons/button";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import editIcon from "@/public/static/mingcute--edit-line.png";
 import deleteIcon from "@/public/static/mingcute--delete-line.png";
 import eyeIcon from "@/public/static/mingcute--eye-line.png";
-
 import Swal from "sweetalert2";
+import { fetchCase, fetchCaseList, updateCase } from "@/app/API/case.route";
 import Modal from "@/app/ui/modal/modal";
 import Card from "@/app/ui/card/card";
 
 export default function Page() {
+  const [tableData, setTableData] = useState([]);
+  const [category, setCategory] = useState("");
   const [modalData, setModalData] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   async function getModalData(id: string) {
-    const data = await fetchBlog(id);
+    const data = await fetchCase(id);
     await setModalData({ ...data.data });
     setModalOpen(true);
   }
-  const [tableData, setTableData] = useState([]);
+
   const tableHead = [
     {
-      key: "title",
-      label: "Blog Title",
+      key: "name",
+      label: "Case Title",
       render: (value: string) => {
         return <span className="font-semibold">{value}</span>;
       },
@@ -43,31 +45,30 @@ export default function Page() {
       },
     },
     {
-      key: "date_created",
-      label: "Date Created",
+      key: "start_date",
+      label: "Start Date",
       render: (value: string) => {
         const d = new Date(value);
-        return `${d.getDate()} ${d.toLocaleDateString("default", {
-          month: "short",
-        })}, ${d.getFullYear()}`;
+        return value
+          ? `${d.getDate()} ${d.toLocaleDateString("default", {
+              month: "short",
+            })}, ${d.getFullYear()}`
+          : "-";
       },
     },
     {
-      key: "date_published",
-      label: "Publish On",
+      key: "end_date",
+      label: "End Date",
       render: (value: string) => {
         const d = new Date(value);
-        return (
-          <>
-            {value !== null
-              ? `${d.getDate()} ${d.toLocaleDateString("default", {
-                  month: "short",
-                })}, ${d.getFullYear()}`
-              : "Will be published soon"}
-          </>
-        );
+        return value
+          ? `${d.getDate()} ${d.toLocaleDateString("default", {
+              month: "short",
+            })}, ${d.getFullYear()}`
+          : "-";
       },
     },
+
     {
       key: "is_published",
       label: "Status",
@@ -103,7 +104,7 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                redirect(`/dashboard/blog/${value}`);
+                redirect(`/dashboard/case/${value}`);
               }}
               className="bg-[#6366F1] !p-1 !rounded-lg"
             >
@@ -127,41 +128,41 @@ export default function Page() {
   const tableDataStatic = [
     {
       id: "abdasdkajd",
-      title: "ABCDEd",
-      date_created: "2025-08-28T06:42:48.838+00:00",
+      name: "ABCDEd",
+      start_date: "2025-08-28T06:42:48.838+00:00",
       is_published: true,
-      date_published: "2025-08-28T06:42:48.838+00:00",
+
       category: "SEO",
     },
     {
       id: "abdasdkajdasdasd",
-      title: "ABCDEd",
-      date_created: "2025-08-28T06:42:48.838+00:00",
+      name: "ABCDEd",
+      start_date: "2025-08-28T06:42:48.838+00:00",
       is_published: false,
-      date_published: "2025-08-28T06:42:48.838+00:00",
+
       category: "SEO",
     },
   ];
   async function getData() {
-    const blogList = await fetchBlogList();
-    console.log(blogList);
-    setTableData(blogList.data);
+    const caseList = await fetchCaseList(category);
+    console.log(caseList);
+    setTableData(caseList.data);
   }
 
-  const onDelete = async (blogId: string) => {
+  const onDelete = async (caseId: string) => {
     const formData = { is_deleted: String(true) };
-    console.log(blogId);
+    console.log(caseId);
 
     try {
-      const resp = await updateBlog(blogId, JSON.stringify(formData));
+      const resp = await updateCase(caseId, JSON.stringify(formData));
 
-      const newTable = tableData.filter((blog) => {
-        return blog._id !== blogId;
+      const newTable = tableData.filter((item) => {
+        return item._id !== caseId;
       });
       setTableData([...newTable]);
       Swal.fire({
         title: "Deleted",
-        text: "Blog Deleted Successfully",
+        text: "Case Deleted Successfully",
         icon: "success",
         confirmButtonText: "OK",
       });
@@ -175,12 +176,13 @@ export default function Page() {
   }, []);
   return (
     <div className="flex flex-col gap-5">
-      <PageHeader name="Blogs" addlink="./blog/create" />
+      <PageHeader name="Case Studies" addlink="./case/create" />
       {tableData.length === 0 ? (
         <span>No Data</span>
       ) : (
         <AdminTable tableHead={tableHead} tableData={tableData} />
       )}
+      {/* <AdminTable tableHead={tableHead} tableData={tableDataStatic} /> */}
 
       <Modal
         isOpen={modalOpen}
@@ -191,15 +193,13 @@ export default function Page() {
       >
         {modalData && (
           <div className="max-h-80vh overflow-y-auto space-y-4">
-            <img src={modalData.banner} className="w-full h-auto" />
-            <div className="text-3xl font-bold ">{modalData.title}</div>
-
+            <h1 className="text-3xl font-bold">{modalData.name}</h1>
             <span className="text-[#6C737F] text-sm">
               Category: {modalData.category.name}
             </span>
             <div
-              className="prose mt-3 "
-              dangerouslySetInnerHTML={{ __html: modalData.content }}
+              className="prose mt-3  "
+              dangerouslySetInnerHTML={{ __html: modalData.description }}
             />
           </div>
         )}

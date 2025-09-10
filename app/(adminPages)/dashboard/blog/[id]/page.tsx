@@ -6,11 +6,11 @@ import DropDown from "@/app/ui/form-elements/dropdown";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
-import PageTitle from "@/app/ui/text-comp/pageTitle";
-import { createBlog } from "@/app/API/blog.route";
+
+import { fetchBlog, updateBlog } from "@/app/API/blog.route";
 import { convertToFormData, toBase64 } from "@/app/utils/helpers/index";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { z } from "zod";
 import { Button } from "@/app/ui/buttons/button";
@@ -23,14 +23,16 @@ import { uploadFile } from "@/app/API/upload.route";
 
 type FormData = z.infer<typeof blogSchema>;
 
-export default function Page() {
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [banner, setBanner] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-
   const [options, setOptions] = useState([]);
   const [content, setContent] = useState(""); //Text editor content}
   const [isPublished, setIsPublished] = useState<boolean>(false);
+
+  const [blogData, setBlogData] = useState({});
+  const blogId = use(params).id;
 
   //Functions
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,10 +40,11 @@ export default function Page() {
       setBanner(e.target.files[0]);
       setPreview(URL.createObjectURL(e.target.files[0]));
     }
+    console.log(banner);
   };
-  ///upload image
+
   const handleUpload = async () => {
-    if (!banner) return alert("Please select a Image first!");
+    if (!banner) return alert("Please select a banner first!");
 
     const formData = new FormData();
     formData.append("file", banner);
@@ -69,7 +72,7 @@ export default function Page() {
       };
       console.log("FORMDATA", formData);
 
-      const resp = await createBlog(JSON.stringify(formData));
+      const resp = await updateBlog(blogId, JSON.stringify(formData));
       Swal.fire({
         text: resp.message,
         icon: "success",
@@ -83,6 +86,7 @@ export default function Page() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(blogSchema),
@@ -97,7 +101,22 @@ export default function Page() {
       setOptions(servicesData.data);
     }
     getServices();
-  }, []);
+    // to prefetch the blog data
+    async function getData(id: string) {
+      console.log(id);
+      const data = await fetchBlog(id);
+      await setBlogData({ ...data.data });
+      console.log("API DATA", data.data);
+      console.log("FUNCT BLOG DATA", blogData);
+      reset({ ...data.data });
+      setPreview(data.data.banner);
+      setImageUrl(data.data.banner);
+      setContent(data.data.content);
+      setIsPublished(data.data.is_published);
+    }
+    getData(blogId);
+    console.log("BLOGDATA", blogData);
+  }, [reset]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -108,7 +127,7 @@ export default function Page() {
           <Card>
             <div className="flex justify-between items-center  ">
               <span className="text-[20px] font-semibold">
-                Create a New Blog
+                Update your Blog
               </span>
               <div className="flex gap-3">
                 <Button type="submit" className="bg-[#1C2536]">
@@ -117,7 +136,7 @@ export default function Page() {
                 <Button
                   type="submit"
                   className="bg-[#6366F1]"
-                  onClick={() => setIsPublished(true)}
+                  onClick={async () => await setIsPublished(true)}
                 >
                   Publish
                 </Button>
