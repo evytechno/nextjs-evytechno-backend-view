@@ -63,3 +63,8 @@ body {
   border-bottom-left-radius: var(--radius-3xl) !important;
   border-bottom-right-radius: var(--radius-3xl) !important;
 }
+
+.tinymce-editor .tox .tox-promotion,
+.tinymce-editor .tox-statusbar__branding {
+  display: none !important;
+}
