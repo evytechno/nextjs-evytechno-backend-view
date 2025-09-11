@@ -12,8 +12,10 @@ import { fetchPage, fetchPageList, updatePage } from "@/app/API/pages.route";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import Modal from "@/app/ui/modal/modal";
+import TableSkeleton from "@/app/ui/skeleton/table-skeleton";
 
 export default function Page() {
+  const [isLoading, setIsLoading] = useState(false);
   const [modalData, setModalData] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   async function getModalData(id: string) {
@@ -113,9 +115,11 @@ export default function Page() {
   ];
 
   async function getData() {
+    setIsLoading(true);
     const pageList = await fetchPageList();
     console.log(pageList);
     setTableData(pageList.data);
+    setIsLoading(false);
   }
 
   const onDelete = async (pageId: string) => {
@@ -157,7 +161,9 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-5">
       <PageHeader name="Pages" addlink="./pages/create" />
-      {tableData.length === 0 ? (
+      {isLoading ? (
+        <TableSkeleton tableHead={tableHead} rows={4} />
+      ) : tableData.length === 0 ? (
         <span>No Data</span>
       ) : (
         <AdminTable tableHead={tableHead} tableData={tableData} />

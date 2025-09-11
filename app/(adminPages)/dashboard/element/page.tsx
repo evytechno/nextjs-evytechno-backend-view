@@ -20,8 +20,10 @@ import DropDown from "@/app/ui/form-elements/dropdown";
 import Swal from "sweetalert2";
 import { fetchServiceList } from "@/app/API/services.route";
 import Modal from "@/app/ui/modal/modal";
+import TableSkeleton from "@/app/ui/skeleton/table-skeleton";
 
 export default function Page() {
+  const [isLoading, setIsLoading] = useState(false);
   const [modalData, setModalData] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   async function getModalData(id: string) {
@@ -155,9 +157,11 @@ export default function Page() {
 
   const [tableData, setTableData] = useState([]);
   async function getData(s: string) {
+    setIsLoading(true);
     const elementList = await fetchElementList(s);
     console.log(elementList);
     setTableData(elementList.data);
+    setIsLoading(false);
   }
 
   const onDelete = async (id: string) => {
@@ -200,6 +204,7 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-5">
       <PageHeader name="Elements of Services" addlink="./element/create" />
+
       <div className="w-1/4">
         <DropDown
           name="service"
@@ -208,11 +213,16 @@ export default function Page() {
           onChange={(e) => onServiceChange(e)}
         />
       </div>
-
-      {tableData.length === 0 ? (
-        <span>No Data</span>
+      {isLoading ? (
+        <TableSkeleton tableHead={tableHead} rows={4} />
       ) : (
-        <AdminTable tableHead={tableHead} tableData={tableData} />
+        <>
+          {tableData.length === 0 ? (
+            <span>No Data</span>
+          ) : (
+            <AdminTable tableHead={tableHead} tableData={tableData} />
+          )}
+        </>
       )}
       <Modal
         isOpen={modalOpen}

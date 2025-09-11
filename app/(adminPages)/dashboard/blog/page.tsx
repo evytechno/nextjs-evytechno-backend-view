@@ -14,8 +14,10 @@ import eyeIcon from "@/public/static/mingcute--eye-line.png";
 import Swal from "sweetalert2";
 import Modal from "@/app/ui/modal/modal";
 import Card from "@/app/ui/card/card";
+import TableSkeleton from "@/app/ui/skeleton/table-skeleton";
 
 export default function Page() {
+  const [isLoading, setIsLoading] = useState(false);
   const [modalData, setModalData] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
@@ -169,9 +171,11 @@ export default function Page() {
     },
   ];
   async function getData() {
+    setIsLoading(true);
     const blogList = await fetchBlogList();
     console.log(blogList);
     setTableData(blogList.data);
+    setIsLoading(false);
   }
 
   const onDelete = async (blogId: string) => {
@@ -202,7 +206,9 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-5">
       <PageHeader name="Blogs" addlink="./blog/create" />
-      {tableData.length === 0 ? (
+      {isLoading ? (
+        <TableSkeleton rows={4} tableHead={tableHead} />
+      ) : tableData.length === 0 ? (
         <span>No Data</span>
       ) : (
         <AdminTable tableHead={tableHead} tableData={tableData} />
