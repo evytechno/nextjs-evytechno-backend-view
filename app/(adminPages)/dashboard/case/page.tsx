@@ -14,8 +14,10 @@ import Swal from "sweetalert2";
 import { fetchCase, fetchCaseList, updateCase } from "@/app/API/case.route";
 import Modal from "@/app/ui/modal/modal";
 import Card from "@/app/ui/card/card";
+import TableSkeleton from "@/app/ui/skeleton/table-skeleton";
 
 export default function Page() {
+  const [isLoading, setIsLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [category, setCategory] = useState("");
   const [modalData, setModalData] = useState<any>(null);
@@ -144,9 +146,11 @@ export default function Page() {
     },
   ];
   async function getData() {
+    setIsLoading(true);
     const caseList = await fetchCaseList(category);
     console.log(caseList);
     setTableData(caseList.data);
+    setIsLoading(false);
   }
 
   const onDelete = async (caseId: string) => {
@@ -177,7 +181,9 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-5">
       <PageHeader name="Case Studies" addlink="./case/create" />
-      {tableData.length === 0 ? (
+      {isLoading ? (
+        <TableSkeleton rows={4} tableHead={tableHead} />
+      ) : tableData.length === 0 ? (
         <span>No Data</span>
       ) : (
         <AdminTable tableHead={tableHead} tableData={tableData} />

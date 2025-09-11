@@ -64,6 +64,10 @@ body {
   border-bottom-right-radius: var(--radius-3xl) !important;
 }
 
+.tinymce-editor {
+  z-index: -1;
+}
+
 .tinymce-editor .tox .tox-promotion,
 .tinymce-editor .tox-statusbar__branding {
   display: none !important;
