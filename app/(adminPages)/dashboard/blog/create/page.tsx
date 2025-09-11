@@ -68,6 +68,7 @@ export default function Page() {
         author: "68aee2860a6fba8d64ce8fda",
         is_published: String(isPublished),
         banner: imageUrl,
+        category: category,
       };
       console.log("FORMDATA", formData);
 
@@ -106,7 +107,7 @@ export default function Page() {
       {/* <PageTitle>Create a New Blog</PageTitle> */}
       <form className="flex flex-col gap-10" onSubmit={handleSubmit(onSubmit)}>
         {/* Hello Admin Card  */}
-        <div className="sticky top-19 bg-white/20 backdrop-blur-sm">
+        <div className="sticky top-19 bg-white/20 backdrop-blur-sm hello-admin-card">
           <Card>
             <div className="flex justify-between items-center  ">
               <span className="text-[20px] font-semibold">
@@ -148,12 +149,12 @@ export default function Page() {
               />
 
               <DropDown
-                {...register("category")}
+                // {...register("category")}
                 name="category"
                 placeholder="Select a category for the Blog"
                 options={options}
                 value={category}
-                onChange={setCategory}
+                onChange={(e) => setCategory(e.target.value)}
               />
             </div>
 

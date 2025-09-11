@@ -142,7 +142,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       {/* <PageTitle>Create a New Service</PageTitle> */}
       <form className="flex flex-col gap-10" onSubmit={handleSubmit(onSubmit)}>
         {/* Hello Admin Card  */}
-        <div className="sticky top-19 bg-white/20 backdrop-blur-sm">
+        <div className="sticky top-19 bg-white/20 backdrop-blur-sm hello-admin-card">
           <Card>
             <div className="flex justify-between items-center  ">
               <span className="text-[20px] font-semibold">
