@@ -68,6 +68,7 @@ export default function Page() {
         author: "68aee2860a6fba8d64ce8fda",
         is_published: String(isPublished),
         banner: imageUrl,
+        category: category,
       };
       console.log("FORMDATA", formData);
 
