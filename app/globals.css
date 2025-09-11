@@ -64,8 +64,8 @@ body {
   border-bottom-right-radius: var(--radius-3xl) !important;
 }
 
-.tinymce-editor {
-  z-index: -1;
+.hello-admin-card {
+  z-index: 99;
 }
 
 .tinymce-editor .tox .tox-promotion,
