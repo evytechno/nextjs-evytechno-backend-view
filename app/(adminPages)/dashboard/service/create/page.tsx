@@ -5,7 +5,7 @@ import Card from "@/app/ui/card/card";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
-import PageTitle from "@/app/ui/text-comp/pageTitle";
+
 import { useState } from "react";
 
 import { z } from "zod";
@@ -71,7 +71,7 @@ export default function Page() {
     }
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: object) => {
     console.log("data.....", e);
     console.log(e);
 
@@ -169,7 +169,7 @@ export default function Page() {
               <div className="flex gap-2 justify-between w-full ">
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
-                    {...register("icon")}
+                    // {...register("icon")}
                     type="file"
                     name="icon"
                     accept="image/"
@@ -201,7 +201,7 @@ export default function Page() {
               <div className="flex gap-2 justify-between w-full ">
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
-                    {...register("banner")}
+                    // {...register("banner")}
                     type="file"
                     name="banner"
                     accept="image/"
@@ -236,7 +236,7 @@ export default function Page() {
               <div className="grid grid-cols-2 gap-3">
                 <Input
                   className="!p-0 !border-0 "
-                  {...register("color1")}
+                  // {...register("color1")}
                   type="color"
                   name="color1"
                   placeholder="Color 1"
@@ -245,7 +245,7 @@ export default function Page() {
                 />
 
                 <Input
-                  {...register("color2")}
+                  // {...register("color2")}
                   className="!p-0 !border-0 "
                   type="color"
                   name="color2"

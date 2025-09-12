@@ -7,9 +7,9 @@ interface TextEditorProps {
   onContentChange: (value: string) => void;
   name: string;
   placeholder?: string | undefined;
-  className: string;
+  className?: string;
   rows: number;
-  cols: number;
+  cols?: number;
   required: boolean;
   errors?: Record<string, { message?: string }>;
 }
@@ -18,14 +18,14 @@ export default function TextEditor({
   value,
   onContentChange,
   placeholder,
-  name,
+  // name,
   className,
   rows,
-  cols,
-  required,
-  errors,
-  ...props
-}: TextEditorProps) {
+  cols = 3,
+}: // required,
+// errors,
+// ...props
+TextEditorProps) {
   const height = rows * 24;
   const width = cols * 8;
   return (

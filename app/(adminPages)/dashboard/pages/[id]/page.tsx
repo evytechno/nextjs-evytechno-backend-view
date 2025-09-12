@@ -1,12 +1,12 @@
 "use client";
-import { createPage, fetchPage, updatePage } from "@/app/API/pages.route";
+import { fetchPage, updatePage } from "@/app/API/pages.route";
 import { uploadFile } from "@/app/API/upload.route";
 import { Button } from "@/app/ui/buttons/button";
 import Card from "@/app/ui/card/card";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
-import PageTitle from "@/app/ui/text-comp/pageTitle";
+
 import { redirect } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -14,7 +14,7 @@ import { PageSchema } from "./pages.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { string, z } from "zod";
+import { z } from "zod";
 
 type FormData = z.infer<typeof PageSchema>;
 
@@ -52,7 +52,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: object) => {
     try {
       const formData = {
         ...e,
@@ -99,7 +99,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
 
     getData(pageId);
-  }, [reset]);
+  }, [reset, pageId]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -160,7 +160,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
                     type="file"
-                    {...register("image")}
+                    // {...register("image")}
                     name="image"
                     accept="image/"
                     className="w-full border-2 border-[#E5E7EB] rounded-3xl p-3"

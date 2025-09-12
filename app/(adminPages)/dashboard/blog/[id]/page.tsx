@@ -8,11 +8,10 @@ import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
 
 import { fetchBlog, updateBlog } from "@/app/API/blog.route";
-import { convertToFormData, toBase64 } from "@/app/utils/helpers/index";
 
 import { use, useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { z } from "zod";
+import { object, z } from "zod";
 import { Button } from "@/app/ui/buttons/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,7 +58,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: object) => {
     try {
       if (isPublished) {
         e = { ...e, date_published: new Date().toISOString() };
@@ -119,7 +118,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
     getData(blogId);
     console.log("BLOGDATA", blogData);
-  }, [reset]);
+  }, [reset, blogData, blogId]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -133,7 +132,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 Update your Blog
               </span>
               <div className="flex gap-3">
-                <Button type="submit" className="bg-[#1C2536]">
+                <Button className="bg-[#1C2536]" type="submit">
                   Save
                 </Button>
                 <Button
@@ -144,9 +143,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                   Publish
                 </Button>
                 <Button
-                  type="button"
                   className="bg-red-400/20 !text-red-800 "
                   onClick={() => redirect(`/dashboard/blog`)}
+                  type="button"
                 >
                   Cancel
                 </Button>
@@ -193,13 +192,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             <div className="flex gap-2 justify-between w-full ">
               <div className="grid grid-rows-2 gap-5 items-center w-full">
                 <input
-                  {...register("banner")}
+                  // {...register("banner")}
                   type="file"
                   name="banner"
                   accept="image/"
                   className={
-                    "w-full border-2 border-[#E5E7EB] rounded-3xl p-3" +
-                    (errors && errors["banner"] ? " border-red-500" : "")
+                    "w-full border-2 border-[#E5E7EB] rounded-3xl p-3"
+                    // (errors && errors["banner"] ? " border-red-500" : "")
                   }
                   onChange={(e) => handleFileChange(e)}
                 />
@@ -214,9 +213,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               {preview && (
                 <img src={preview} alt="preview" height={100} width={100} />
               )}
-              {errors && errors["banner"] && errors["banner"].message && (
+              {/* {errors && errors["banner"] && errors["banner"].message && (
                 <p className="text-red-500">{errors["banner"].message}</p>
-              )}
+              )} */}
             </div>
           </FormLayout>
         </Card>
@@ -225,7 +224,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         <Card>
           <FormLayout title="Content">
             <TextEditor
-              {...register("content")}
+              // {...register("content")}
               placeholder="Blog Content Starts here..."
               value={content}
               onContentChange={setContent}

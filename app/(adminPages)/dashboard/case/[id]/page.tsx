@@ -13,7 +13,7 @@ import { caseSchena } from "./case.schema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
-import { createCase, fetchCase, updateCase } from "@/app/API/case.route";
+import { fetchCase, updateCase } from "@/app/API/case.route";
 import { redirect } from "next/navigation";
 
 type FormData = z.infer<typeof caseSchena>;
@@ -33,7 +33,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [caseDate, setCaseData] = useState({});
   const caseId = use(params).id;
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: object) => {
     console.log("data.....", e);
     console.log(e);
 
@@ -96,7 +96,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       setIsPublished(data.data.is_published);
     }
     getData(caseId);
-  }, [reset]);
+  }, [reset, caseId]);
 
   return (
     <div className="flex flex-col gap-10">

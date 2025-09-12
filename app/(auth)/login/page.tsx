@@ -4,7 +4,7 @@ import { Button } from "@/app/ui/buttons/button";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import PageTitle from "@/app/ui/text-comp/pageTitle";
-import loginBG from "@/public/static/login-bg.png";
+
 import logo from "@/public/static/logo.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -35,7 +35,7 @@ export default function Page() {
             <span className="font-bold text-3xl text-white">
               Welcome to EVY TECHNO
             </span>
-            <Image src={logo} className="h-60 w-auto" />
+            <Image src={logo} className="h-60 w-auto" alt="Logo" />
           </div>
           {/* Login Form */}
           <div className="w-1/3 flex flex-col items-center justify-center px-5 bg-white">

@@ -1,19 +1,17 @@
 "use client";
-export const Button = ({
-  children,
+import React from "react";
 
-  className,
-  ...props
-}: {
-  children: React.ReactNode;
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  className?: string;
+};
 
-  className: string;
-}) => {
+export const Button = ({ children, className, ...props }: ButtonProps) => {
   return (
     <button
-      //   onClick={(e) => onClick}
       {...props}
-      className={` ${className} flex justify-center items-center   text-white font-semibold py-3 px-4 rounded-3xl`}
+      className={`${
+        className ? className : ""
+      } flex justify-center items-center text-white font-semibold py-3 px-4 rounded-3xl`}
     >
       {children}
     </button>

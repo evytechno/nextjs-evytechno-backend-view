@@ -22,9 +22,18 @@ import { fetchServiceList } from "@/app/API/services.route";
 import Modal from "@/app/ui/modal/modal";
 import TableSkeleton from "@/app/ui/skeleton/table-skeleton";
 
+type ModalData = {
+  image?: string;
+  title?: string;
+  name?: string;
+  category?: { name: string };
+  description: string | TrustedHTML;
+  // add other fields you need
+};
+
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
-  const [modalData, setModalData] = useState<any>(null);
+  const [modalData, setModalData] = useState<ModalData | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   async function getModalData(id: string) {
     const data = await fetchElement(id);
@@ -36,7 +45,7 @@ export default function Page() {
     {
       key: "icon",
       label: "Image and Icon",
-      render: (value: string, data: any) => {
+      render: (value: string, data: { image: string }) => {
         // console.log("data at table", data);
 
         return (
@@ -85,8 +94,8 @@ export default function Page() {
     {
       key: "service",
       label: "Service",
-      render: (value: object) => {
-        return <span className="text-sm">{value?.name}</span>;
+      render: (value: { name: string }) => {
+        return <span className="text-sm">{value && value?.name}</span>;
       },
     },
     {
@@ -125,32 +134,32 @@ export default function Page() {
       },
     },
   ];
-  const tableDataStatic = [
-    {
-      _id: "68ac4ccaf6405d14145c26be",
-      name: "Custom Website Development",
-      icon: "./def/imh.jpg",
-      description:
-        "Tailored to meet your unique business needs and goals, we offer:",
-      service: "Web Dev",
-    },
-    {
-      _id: "68ac4cf5f6405d14145c26c2",
-      name: "On Page SEO",
-      icon: "./def/imh.jpg",
-      description:
-        "We optimize your website’s content, structure, and meta tags to make it search-engine-friendly. This includes:",
-      service: "SEO",
-    },
-    {
-      _id: "68ac4d6c451cbebaa7a25da6",
-      name: "Android App Development",
-      icon: "./def/imh.jpg",
-      description:
-        "Tap into the vast Android market with innovative and high-performance appst",
-      service: "App Dev",
-    },
-  ];
+  // const tableDataStatic = [
+  //   {
+  //     _id: "68ac4ccaf6405d14145c26be",
+  //     name: "Custom Website Development",
+  //     icon: "./def/imh.jpg",
+  //     description:
+  //       "Tailored to meet your unique business needs and goals, we offer:",
+  //     service: "Web Dev",
+  //   },
+  //   {
+  //     _id: "68ac4cf5f6405d14145c26c2",
+  //     name: "On Page SEO",
+  //     icon: "./def/imh.jpg",
+  //     description:
+  //       "We optimize your website’s content, structure, and meta tags to make it search-engine-friendly. This includes:",
+  //     service: "SEO",
+  //   },
+  //   {
+  //     _id: "68ac4d6c451cbebaa7a25da6",
+  //     name: "Android App Development",
+  //     icon: "./def/imh.jpg",
+  //     description:
+  //       "Tap into the vast Android market with innovative and high-performance appst",
+  //     service: "App Dev",
+  //   },
+  // ];
   const [options, setOptions] = useState([]);
 
   const [service, setService] = useState("");
@@ -169,9 +178,9 @@ export default function Page() {
     console.log(id);
 
     try {
-      const resp = await updateElement(id, JSON.stringify(formData));
+      await updateElement(id, JSON.stringify(formData));
 
-      const newTable = tableData.filter((element) => {
+      const newTable = tableData.filter((element: { _id: string }) => {
         return element._id !== id;
       });
       setTableData([...newTable]);
@@ -186,7 +195,7 @@ export default function Page() {
     }
   };
 
-  async function onServiceChange(e) {
+  async function onServiceChange(e: React.ChangeEvent<HTMLSelectElement>) {
     await getData(e.target.value);
     setService(e.target.value);
   }
@@ -199,7 +208,7 @@ export default function Page() {
     }
     getServices();
     getData(service);
-  }, []);
+  }, [service]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -234,7 +243,11 @@ export default function Page() {
         {modalData && (
           <div className="max-h-80vh overflow-y-auto space-y-4">
             {modalData.image && (
-              <img src={modalData.image} className="w-full h-auto" />
+              <img
+                src={modalData.image}
+                className="w-full h-auto"
+                alt="image"
+              />
             )}
             <div
               className="prose text-3xl font-bold "

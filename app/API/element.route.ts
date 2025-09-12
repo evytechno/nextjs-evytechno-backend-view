@@ -20,7 +20,7 @@ export async function fetchElementList(service: string) {
   }
 }
 
-export async function createElement(data: any) {
+export async function createElement(data: string) {
   console.log("Data", data);
   try {
     const resp = await fetch(`${BASE_URL}`, {
@@ -39,7 +39,7 @@ export async function createElement(data: any) {
   }
 }
 
-export async function updateElement(id: string, data: any) {
+export async function updateElement(id: string, data: string) {
   try {
     const resp = await fetch(`${BASE_URL}/${id}`, {
       method: "PUT",

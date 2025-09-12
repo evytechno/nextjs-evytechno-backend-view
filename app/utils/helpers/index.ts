@@ -6,7 +6,7 @@ export const toBase64 = (file: File) =>
     reader.onerror = (err) => reject(err);
   });
 
-export const convertToFormData = (obj: Record<string, any>): FormData => {
+export const convertToFormData = (obj: Record<string, object>): FormData => {
   const formData = new FormData();
 
   Object.entries(obj).forEach(([key, value]) => {

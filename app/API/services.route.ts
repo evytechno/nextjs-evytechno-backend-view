@@ -31,7 +31,7 @@ export async function fetchService(id: string) {
   }
 }
 
-export async function createService(data: any) {
+export async function createService(data: string) {
   try {
     const resp = await fetch(`${BASE_URL}`, {
       method: "POST",
@@ -49,7 +49,7 @@ export async function createService(data: any) {
   }
 }
 // to update a blog
-export async function updateService(id: string, data: any) {
+export async function updateService(id: string, data: string) {
   try {
     const resp = await fetch(`${BASE_URL}/${id}`, {
       method: "PUT",

@@ -13,12 +13,19 @@ import eyeIcon from "@/public/static/mingcute--eye-line.png";
 
 import Swal from "sweetalert2";
 import Modal from "@/app/ui/modal/modal";
-import Card from "@/app/ui/card/card";
+
 import TableSkeleton from "@/app/ui/skeleton/table-skeleton";
+type ModalData = {
+  banner?: string;
+  title?: string;
+  category?: { name: string };
+  content: string | TrustedHTML;
+  // add other fields you need
+};
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
-  const [modalData, setModalData] = useState<any>(null);
+  const [modalData, setModalData] = useState<ModalData | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   async function getModalData(id: string) {
@@ -36,6 +43,7 @@ export default function Page() {
           value && (
             <div className="flex items-center justify-center">
               <img
+                alt="blog image"
                 src={value}
                 className="h-25 w-25 object-cover rounded-md border-2 border-[#cccccc70]"
               />
@@ -47,24 +55,14 @@ export default function Page() {
     {
       key: "title",
       label: "Blog Title",
-      render: (value: string, data: any) => {
-        return (
-          // <div className="flex gap-2">
-          //   {data.banner && (
-          //     <img
-          //       src={data.banner}
-          //       className="h-20 w-20 rounded-md border-2 border-[#cccccc70]"
-          //     />
-          //   )}
-          <span className="font-semibold">{value}</span>
-          // </div>
-        );
+      render: (value: string) => {
+        return <span className="font-semibold">{value}</span>;
       },
     },
     {
       key: "category",
       label: "Category",
-      render: (value) => {
+      render: (value: { name: string }) => {
         return (
           <span className="text-[#6C737F]">{value ? value.name : "-"}</span>
         );
@@ -152,24 +150,24 @@ export default function Page() {
     },
   ];
 
-  const tableDataStatic = [
-    {
-      id: "abdasdkajd",
-      title: "ABCDEd",
-      date_created: "2025-08-28T06:42:48.838+00:00",
-      is_published: true,
-      date_published: "2025-08-28T06:42:48.838+00:00",
-      category: "SEO",
-    },
-    {
-      id: "abdasdkajdasdasd",
-      title: "ABCDEd",
-      date_created: "2025-08-28T06:42:48.838+00:00",
-      is_published: false,
-      date_published: "2025-08-28T06:42:48.838+00:00",
-      category: "SEO",
-    },
-  ];
+  // const tableDataStatic = [
+  //   {
+  //     id: "abdasdkajd",
+  //     title: "ABCDEd",
+  //     date_created: "2025-08-28T06:42:48.838+00:00",
+  //     is_published: true,
+  //     date_published: "2025-08-28T06:42:48.838+00:00",
+  //     category: "SEO",
+  //   },
+  //   {
+  //     id: "abdasdkajdasdasd",
+  //     title: "ABCDEd",
+  //     date_created: "2025-08-28T06:42:48.838+00:00",
+  //     is_published: false,
+  //     date_published: "2025-08-28T06:42:48.838+00:00",
+  //     category: "SEO",
+  //   },
+  // ];
   async function getData() {
     setIsLoading(true);
     const blogList = await fetchBlogList();
@@ -183,9 +181,9 @@ export default function Page() {
     console.log(blogId);
 
     try {
-      const resp = await updateBlog(blogId, JSON.stringify(formData));
+      await updateBlog(blogId, JSON.stringify(formData));
 
-      const newTable = tableData.filter((blog) => {
+      const newTable = tableData.filter((blog: { _id: string }) => {
         return blog._id !== blogId;
       });
       setTableData([...newTable]);
@@ -223,7 +221,11 @@ export default function Page() {
       >
         {modalData && (
           <div className="max-h-80vh overflow-y-auto space-y-4">
-            <img src={modalData.banner} className="w-full h-auto" />
+            <img
+              alt="model image"
+              src={modalData && modalData.banner}
+              className="w-full h-auto"
+            />
             <div className="text-3xl font-bold ">{modalData.title}</div>
             {modalData.category && (
               <span className="text-[#6C737F] text-sm">

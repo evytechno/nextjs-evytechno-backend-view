@@ -33,7 +33,7 @@ export async function fetchPage(id: string) {
 }
 
 // to create a new blog
-export async function createPage(data: any) {
+export async function createPage(data: string) {
   try {
     const resp = await fetch(`${BASE_URL}`, {
       method: "POST",
@@ -51,7 +51,7 @@ export async function createPage(data: any) {
   }
 }
 // to update a blog
-export async function updatePage(id: string, data: any) {
+export async function updatePage(id: string, data: string) {
   try {
     const resp = await fetch(`${BASE_URL}/${id}`, {
       method: "PUT",

@@ -16,7 +16,7 @@ import TableSkeleton from "@/app/ui/skeleton/table-skeleton";
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
-  const [modalData, setModalData] = useState<any>(null);
+  const [modalData, setModalData] = useState<object>();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   async function getModalData(id: string) {
     const data = await fetchPage(id);
@@ -127,7 +127,7 @@ export default function Page() {
     console.log(pageId);
 
     try {
-      const resp = await updatePage(pageId, JSON.stringify(formData));
+      await updatePage(pageId, JSON.stringify(formData));
 
       const newTable = tableData.filter((page) => {
         return page._id !== pageId;
@@ -144,16 +144,16 @@ export default function Page() {
     }
   };
 
-  const tableDataStatic = [
-    {
-      _id: "68ac4ccaf6405d14145c26be",
-      name: "About",
-      title: "Innovate. Create. Dominate– The Evy Techno Way",
-      description:
-        "At Evy Techno Where Creativity Meets Algorithms, we are a dynamic team of innovators, strategists, and tech enthusiasts dedicated to transforming businesses through cutting-edge digital solutions. With expertise in web development, app development, graphic designing, search engine optimization (SEO), and digital marketing, we help brands establish a powerful online presence and stay ahead in the digital era. Our mission is to craft intuitive, high-performance websites and applications that drive engagement and growth. Whether you need a stunning website, a feature-rich mobile app, or a robust digital marketing strategy, Evy Techno ensures top-tier solutions tailored to your needs. We believe in innovation, creativity, and result-driven strategies, making us the trusted technology partner for startups, enterprises, and growing businesses. Let’s build something extraordinary together!",
-      image: "./abc/cd.png",
-    },
-  ];
+  // const tableDataStatic = [
+  //   {
+  //     _id: "68ac4ccaf6405d14145c26be",
+  //     name: "About",
+  //     title: "Innovate. Create. Dominate– The Evy Techno Way",
+  //     description:
+  //       "At Evy Techno Where Creativity Meets Algorithms, we are a dynamic team of innovators, strategists, and tech enthusiasts dedicated to transforming businesses through cutting-edge digital solutions. With expertise in web development, app development, graphic designing, search engine optimization (SEO), and digital marketing, we help brands establish a powerful online presence and stay ahead in the digital era. Our mission is to craft intuitive, high-performance websites and applications that drive engagement and growth. Whether you need a stunning website, a feature-rich mobile app, or a robust digital marketing strategy, Evy Techno ensures top-tier solutions tailored to your needs. We believe in innovation, creativity, and result-driven strategies, making us the trusted technology partner for startups, enterprises, and growing businesses. Let’s build something extraordinary together!",
+  //     image: "./abc/cd.png",
+  //   },
+  // ];
 
   useEffect(() => {
     getData();
@@ -178,7 +178,11 @@ export default function Page() {
         {modalData && (
           <div className="max-h-80vh overflow-y-auto space-y-4">
             {modalData.image && (
-              <img src={modalData.image} className="w-full h-auto" />
+              <img
+                src={modalData.image}
+                className="w-full h-auto"
+                alt="modal image"
+              />
             )}
             <div
               className="prose text-3xl font-bold "

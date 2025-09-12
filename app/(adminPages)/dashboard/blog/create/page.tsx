@@ -6,9 +6,8 @@ import DropDown from "@/app/ui/form-elements/dropdown";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
-import PageTitle from "@/app/ui/text-comp/pageTitle";
+
 import { createBlog } from "@/app/API/blog.route";
-import { convertToFormData, toBase64 } from "@/app/utils/helpers/index";
 
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -57,7 +56,7 @@ export default function Page() {
     }
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: object) => {
     try {
       if (isPublished) {
         e = { ...e, date_published: new Date().toISOString() };
@@ -174,13 +173,13 @@ export default function Page() {
             <div className="flex gap-2 justify-between w-full ">
               <div className="grid grid-rows-2 gap-5 items-center w-full">
                 <input
-                  {...register("banner")}
+                  // {...register("banner")}
                   type="file"
                   name="banner"
                   accept="image/"
                   className={
-                    "w-full border-2 border-[#E5E7EB] rounded-3xl p-3" +
-                    (errors && errors["banner"] ? " border-red-500" : "")
+                    "w-full border-2 border-[#E5E7EB] rounded-3xl p-3"
+                    // (errors && errors["banner"] ? " border-red-500" : "")
                   }
                   onChange={(e) => handleFileChange(e)}
                 />
@@ -195,9 +194,9 @@ export default function Page() {
               {preview && (
                 <img src={preview} alt="preview" height={100} width={100} />
               )}
-              {errors && errors["banner"] && errors["banner"].message && (
+              {/* {errors && errors["banner"] && errors["banner"].message && (
                 <p className="text-red-500">{errors["banner"].message}</p>
-              )}
+              )} */}
             </div>
           </FormLayout>
         </Card>
@@ -206,7 +205,7 @@ export default function Page() {
         <Card>
           <FormLayout title="Content">
             <TextEditor
-              {...register("content")}
+              // {...register("content")}
               placeholder="Blog Content Starts here..."
               value={content}
               onContentChange={setContent}

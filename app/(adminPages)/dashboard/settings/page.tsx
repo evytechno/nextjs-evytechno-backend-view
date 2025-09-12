@@ -4,7 +4,7 @@ import { Button } from "@/app/ui/buttons/button";
 import Card from "@/app/ui/card/card";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
-import { redirect } from "next/navigation";
+
 import { useEffect, useState } from "react";
 import { settingsSchema } from "./settings.schema";
 import { z } from "zod";
@@ -70,7 +70,7 @@ export default function Page() {
     }
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: object) => {
     console.log("data.....", e);
     console.log(e);
 
@@ -122,7 +122,7 @@ export default function Page() {
     }
     getData();
     console.log("settingsData", settingsData);
-  }, [reset]);
+  }, [reset, settingsData]);
   return (
     <div className="flex flex-col gap-10">
       <form className="flex flex-col gap-10" onSubmit={handleSubmit(onSubmit)}>
@@ -174,7 +174,7 @@ export default function Page() {
                 errors={errors}
               />
               <Input
-                {...register("mobile")}
+                // {...register("mobile")}
                 type="text"
                 name="mobile"
                 placeholder="Mobile"
@@ -199,7 +199,7 @@ export default function Page() {
               <div className="flex gap-2 justify-between w-full ">
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
-                    {...register("icon")}
+                    // {...register("icon")}
                     type="file"
                     name="favicon"
                     accept="image/"
@@ -231,7 +231,7 @@ export default function Page() {
               <div className="flex gap-2 justify-between w-full ">
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
-                    {...register("logo")}
+                    // {...register("logo")}
                     type="file"
                     name="logo"
                     accept="image/"

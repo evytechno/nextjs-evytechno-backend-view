@@ -5,7 +5,7 @@ import Card from "@/app/ui/card/card";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
-import PageTitle from "@/app/ui/text-comp/pageTitle";
+
 import { use, useEffect, useState } from "react";
 
 import { z } from "zod";
@@ -14,11 +14,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { serviceSchema } from "./service.schema";
 import { redirect } from "next/navigation";
-import {
-  createService,
-  fetchService,
-  updateService,
-} from "@/app/API/services.route";
+import { fetchService, updateService } from "@/app/API/services.route";
 import Swal from "sweetalert2";
 
 type FormData = z.infer<typeof serviceSchema>;
@@ -78,7 +74,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: object) => {
     console.log("data.....", e);
     console.log(e);
 
@@ -135,7 +131,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
     getData(serviceId);
     console.log("servicedata", serviceData);
-  }, [reset]);
+  }, [reset, serviceData, serviceId]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -229,7 +225,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               <div className="flex gap-2 justify-between w-full ">
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
-                    {...register("banner")}
+                    // {...register("banner")}
                     type="file"
                     name="banner"
                     accept="image/"
@@ -264,7 +260,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               <div className="grid grid-cols-2 gap-3">
                 <Input
                   className="!p-0 !border-0 "
-                  {...register("color1")}
+                  // {...register("color1")}
                   type="color"
                   name="color1"
                   placeholder="Color 1"
@@ -273,7 +269,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 />
 
                 <Input
-                  {...register("color2")}
+                  // {...register("color2")}
                   className="!p-0 !border-0 "
                   type="color"
                   name="color2"

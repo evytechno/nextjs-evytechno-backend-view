@@ -30,7 +30,7 @@ export default function Page() {
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const [options, setOptions] = useState([]);
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: object) => {
     console.log("data.....", e);
     console.log(e);
 

@@ -19,7 +19,7 @@ import Swal from "sweetalert2";
 import Modal from "@/app/ui/modal/modal";
 
 export default function Page() {
-  const [modalData, setModalData] = useState<any>(null);
+  const [modalData, setModalData] = useState<object>();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [tableData, setTableData] = useState([]);
 
@@ -49,7 +49,7 @@ export default function Page() {
     {
       key: "icon",
       label: "Image and Icon",
-      render: (value: string, data: any) => {
+      render: (value: string, data: object) => {
         // console.log("data at table", data);
 
         return (
@@ -132,32 +132,32 @@ export default function Page() {
     },
   ];
 
-  const tableDataStatic = [
-    {
-      _id: "68ac4ccaf6405d14145c26be",
-      name: "Web Dev",
-      icon: "./def/imh.jpg",
-      description: "We do Web development",
-      image: "./abc/cd.png",
-      __v: 0,
-    },
-    {
-      _id: "68ac4cf5f6405d14145c26c2",
-      name: "SEO",
-      icon: "./def/imh.jpg",
-      description: "We do SEO here",
-      image: "./abc/cd.png",
-      __v: 0,
-    },
-    {
-      _id: "68ac4d6c451cbebaa7a25da6",
-      name: "App Dev",
-      icon: "./def/imh.jpg",
-      description: "We do Web development",
-      image: "./abc/cd.png",
-      __v: 0,
-    },
-  ];
+  // const tableDataStatic = [
+  //   {
+  //     _id: "68ac4ccaf6405d14145c26be",
+  //     name: "Web Dev",
+  //     icon: "./def/imh.jpg",
+  //     description: "We do Web development",
+  //     image: "./abc/cd.png",
+  //     __v: 0,
+  //   },
+  //   {
+  //     _id: "68ac4cf5f6405d14145c26c2",
+  //     name: "SEO",
+  //     icon: "./def/imh.jpg",
+  //     description: "We do SEO here",
+  //     image: "./abc/cd.png",
+  //     __v: 0,
+  //   },
+  //   {
+  //     _id: "68ac4d6c451cbebaa7a25da6",
+  //     name: "App Dev",
+  //     icon: "./def/imh.jpg",
+  //     description: "We do Web development",
+  //     image: "./abc/cd.png",
+  //     __v: 0,
+  //   },
+  // ];
 
   async function getData() {
     const serviceList = await fetchServiceList();
@@ -170,7 +170,7 @@ export default function Page() {
     console.log(id);
 
     try {
-      const resp = await updateService(id, JSON.stringify(formData));
+      await updateService(id, JSON.stringify(formData));
 
       const newTable = tableData.filter((service) => {
         return service._id !== id;
@@ -209,7 +209,11 @@ export default function Page() {
         {modalData && (
           <div className="max-h-80vh overflow-y-auto space-y-4">
             {modalData.banner && (
-              <img src={modalData.banner} className="w-full h-auto" />
+              <img
+                src={modalData.banner}
+                className="w-full h-auto"
+                alt="modal image"
+              />
             )}
             <div className="text-3xl font-bold ">{modalData.name}</div>
 

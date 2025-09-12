@@ -20,7 +20,7 @@ export async function fetchCaseList(category: string) {
   }
 }
 
-export async function createCase(data: any) {
+export async function createCase(data: string) {
   console.log("Data", data);
   try {
     const resp = await fetch(`${BASE_URL}`, {
@@ -39,7 +39,7 @@ export async function createCase(data: any) {
   }
 }
 
-export async function updateCase(id: string, data: any) {
+export async function updateCase(id: string, data: string) {
   try {
     const resp = await fetch(`${BASE_URL}/${id}`, {
       method: "PUT",

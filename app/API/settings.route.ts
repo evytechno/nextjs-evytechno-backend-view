@@ -17,7 +17,7 @@ export async function fetchSettings() {
   }
 }
 
-export async function updateSettings(id: string, data: any) {
+export async function updateSettings(id: string, data: string) {
   try {
     const resp = await fetch(`${BASE_URL}/${id}`, {
       method: "PUT",

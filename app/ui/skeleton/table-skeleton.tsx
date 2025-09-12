@@ -8,13 +8,13 @@ type TypeTableHead = {
 
 interface TableSkeletonProps {
   rows?: number;
-  columns?: number;
+  // columns?: number;
   tableHead?: TypeTableHead[];
 }
 
 export default function TableSkeleton({
   rows,
-  columns,
+  // columns,
   tableHead,
 }: TableSkeletonProps) {
   return (
