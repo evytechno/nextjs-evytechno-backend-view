@@ -52,9 +52,9 @@ export default function Page() {
     console.log(name);
     try {
       const formData = new FormData();
-      if (name === "icon") {
+      if (name === "icon" && icon) {
         formData.append("file", icon);
-      } else if (name === "logo") {
+      } else if (name === "logo" && logo) {
         formData.append("file", logo);
       }
 
@@ -180,7 +180,9 @@ export default function Page() {
                 placeholder="Mobile"
                 maxLength={10}
                 value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setMobile(Number(e.target.value))
+                }
                 onInput={(e) => {
                   e.currentTarget.value = e.currentTarget.value.replace(
                     /[^0-9]/g,
@@ -199,6 +201,7 @@ export default function Page() {
               <div className="flex gap-2 justify-between w-full ">
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
+                    placeholder="Upload Favicon"
                     // {...register("icon")}
                     type="file"
                     name="favicon"
@@ -231,6 +234,7 @@ export default function Page() {
               <div className="flex gap-2 justify-between w-full ">
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
+                    placeholder="Upload Logo"
                     // {...register("logo")}
                     type="file"
                     name="logo"

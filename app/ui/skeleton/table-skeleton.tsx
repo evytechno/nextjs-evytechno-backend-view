@@ -9,7 +9,7 @@ type TypeTableHead = {
 interface TableSkeletonProps {
   rows?: number;
   // columns?: number;
-  tableHead?: TypeTableHead[];
+  tableHead: TypeTableHead[];
 }
 
 export default function TableSkeleton({
@@ -25,7 +25,7 @@ export default function TableSkeleton({
             return (
               <th
                 className="p-5 bg-blend border-l-1 border-r-1  border-[#000]/5"
-                key={id}
+                key={id.key}
               >
                 <Skeleton width="70%" height="24px" />
               </th>
@@ -40,7 +40,7 @@ export default function TableSkeleton({
               {tableHead.map((j) => {
                 return (
                   <td
-                    key={j}
+                    key={j.key}
                     className="p-5 border-l-1 border-r-1  border-[#000]/5"
                   >
                     <Skeleton

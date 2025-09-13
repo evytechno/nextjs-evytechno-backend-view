@@ -144,7 +144,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 errors={errors}
               />
               <TextEditor
-                {...register("title")}
                 name="title"
                 placeholder="Page Title."
                 value={pageTitle}
@@ -160,6 +159,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
                     type="file"
+                    placeholder="upload image"
                     // {...register("image")}
                     name="image"
                     accept="image/"
@@ -185,7 +185,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         <Card>
           <FormLayout title="Description">
             <TextEditor
-              {...register("description")}
               name="description"
               placeholder="Page Description Starts here..."
               value={content}

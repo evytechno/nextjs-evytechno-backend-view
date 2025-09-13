@@ -244,6 +244,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
                     // {...register("icon")}
+                    placeholder="Upload Icon"
                     type="file"
                     name="icon"
                     accept="image/"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AdminTable from "../../../ui/admin-table/admin-table";
+import AdminTable, { TypeTableHead } from "../../../ui/admin-table/admin-table";
 import PageHeader from "../../../ui/page-header/page-header";
 
 import { Button } from "@/app/ui/buttons/button";
@@ -24,9 +24,18 @@ type ModalData = {
   // add other fields you need
 };
 
+type TableRow = {
+  name: string;
+  category: { name: string } | string;
+  start_date: string;
+  end_date: string;
+  is_published: boolean;
+  _id: string;
+};
+
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState<TableRow[]>([]);
   const [category, setCategory] = useState("");
   const [modalData, setModalData] = useState<ModalData | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -37,52 +46,68 @@ export default function Page() {
     setModalOpen(true);
   }
 
-  const tableHead = [
+  const tableHead: TypeTableHead<TableRow>[] = [
     {
       key: "name",
       label: "Case Title",
-      render: (value: string) => {
-        return <span className="font-semibold">{value}</span>;
+      render: (value) => {
+        return (
+          <span className="font-semibold">
+            {value !== null ? String(value) : "No Title available"}
+          </span>
+        );
       },
     },
     {
       key: "category",
       label: "Category",
-      render: (value: { name: string }) => {
+      render: (value) => {
         return (
-          <span className="text-[#6C737F]">{value ? value.name : "-"}</span>
+          <span className="text-[#6C737F]">
+            {typeof value === "object" && value !== null && "name" in value
+              ? value.name
+              : "-"}
+          </span>
         );
       },
     },
     {
       key: "start_date",
       label: "Start Date",
-      render: (value: string) => {
-        const d = new Date(value);
-        return value
-          ? `${d.getDate()} ${d.toLocaleDateString("default", {
-              month: "short",
-            })}, ${d.getFullYear()}`
-          : "-";
+      render: (value) => {
+        const d = new Date(String(value));
+        return (
+          <>
+            {value
+              ? `${d.getDate()} ${d.toLocaleDateString("default", {
+                  month: "short",
+                })}, ${d.getFullYear()}`
+              : "-"}
+          </>
+        );
       },
     },
     {
       key: "end_date",
       label: "End Date",
-      render: (value: string) => {
-        const d = new Date(value);
-        return value
-          ? `${d.getDate()} ${d.toLocaleDateString("default", {
-              month: "short",
-            })}, ${d.getFullYear()}`
-          : "-";
+      render: (value) => {
+        const d = new Date(String(value));
+        return (
+          <>
+            {value
+              ? `${d.getDate()} ${d.toLocaleDateString("default", {
+                  month: "short",
+                })}, ${d.getFullYear()}`
+              : "-"}
+          </>
+        );
       },
     },
 
     {
       key: "is_published",
       label: "Status",
-      render: (value: boolean) => {
+      render: (value) => {
         return (
           <span className=" font-semibold text-[12px]">
             {value ? (
@@ -101,12 +126,12 @@ export default function Page() {
     {
       key: "_id",
       label: "Actions",
-      render: (value: string) => {
+      render: (value) => {
         return (
           <div className="flex gap-2">
             <Button
               type="button"
-              onClick={() => getModalData(value)}
+              onClick={() => typeof value === "string" && getModalData(value)}
               className="bg-[#15a80d] !p-1 !rounded-lg"
             >
               <Image src={eyeIcon} alt="Edit" height={24} />
@@ -114,7 +139,8 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                redirect(`/dashboard/case/${value}`);
+                typeof value === "string" &&
+                  redirect(`/dashboard/case/${value}`);
               }}
               className="bg-[#6366F1] !p-1 !rounded-lg"
             >
@@ -123,7 +149,7 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                onDelete(value);
+                typeof value === "string" && onDelete(value);
               }}
               className="bg-[#AF2B0D] !p-1 !rounded-lg"
             >

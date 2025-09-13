@@ -1,7 +1,13 @@
 import { Button } from "../buttons/button";
 import Card from "../card/card";
 
-const StickyHead = (name: string, publish: () => void, cancel: () => void) => {
+interface StickyHeadProps {
+  name: string;
+  publish: () => void;
+  cancel: () => void;
+}
+
+const StickyHead = ({ name, publish, cancel }: StickyHeadProps) => {
   return (
     <div className="sticky top-19 bg-white/20 backdrop-blur-sm">
       <Card>
@@ -11,17 +17,13 @@ const StickyHead = (name: string, publish: () => void, cancel: () => void) => {
             <Button type="submit" className="bg-[#1C2536]">
               Save
             </Button>
-            <Button
-              type="submit"
-              className="bg-[#6366F1]"
-              onClick={() => publish(true)}
-            >
+            <Button type="submit" className="bg-[#6366F1]" onClick={publish}>
               Publish
             </Button>
             <Button
               type="button"
               className="bg-red-400/20 !text-red-800 "
-              onClick={() => cancel()}
+              onClick={cancel}
             >
               Cancel
             </Button>

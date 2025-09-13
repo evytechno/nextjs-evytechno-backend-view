@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AdminTable from "../../../ui/admin-table/admin-table";
+import AdminTable, { TypeTableHead } from "../../../ui/admin-table/admin-table";
 import PageHeader from "../../../ui/page-header/page-header";
 import { fetchBlog, fetchBlogList, updateBlog } from "@/app/API/blog.route";
 import { Button } from "@/app/ui/buttons/button";
@@ -22,6 +22,16 @@ type ModalData = {
   content: string | TrustedHTML;
   // add other fields you need
 };
+type TableRow = {
+  icon: string;
+  banner: string;
+  title: string;
+  category: { name: string } | string;
+  date_created: string;
+  date_published: string;
+  is_published: boolean;
+  _id: string;
+};
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,56 +43,65 @@ export default function Page() {
     await setModalData({ ...data.data });
     setModalOpen(true);
   }
-  const [tableData, setTableData] = useState([]);
-  const tableHead = [
+  const [tableData, setTableData] = useState<TableRow[]>([]);
+  const tableHead: TypeTableHead<TableRow>[] = [
     {
       key: "banner",
       label: "Image",
-      render: (value: string) => {
-        return (
-          value && (
+      render: (value) => {
+        if (value && typeof value === "string") {
+          return (
             <div className="flex items-center justify-center">
               <img
-                alt="blog image"
                 src={value}
                 className="h-25 w-25 object-cover rounded-md border-2 border-[#cccccc70]"
+                alt="blog image"
               />
             </div>
-          )
-        );
+          );
+        }
+        return <></>;
       },
     },
     {
       key: "title",
       label: "Blog Title",
-      render: (value: string) => {
-        return <span className="font-semibold">{value}</span>;
+      render: (value) => {
+        // Render blog title with enhanced readability and error handling
+        const title = value != null ? String(value) : "No title available";
+        return <strong>{title}</strong>;
       },
     },
     {
       key: "category",
       label: "Category",
-      render: (value: { name: string }) => {
+      render: (value) => {
         return (
-          <span className="text-[#6C737F]">{value ? value.name : "-"}</span>
+          <span className="text-[#6C737F]">
+            {typeof value === "object" && value !== null && "name" in value
+              ? value.name
+              : String(value)}
+          </span>
         );
       },
     },
     {
       key: "date_created",
       label: "Date Created",
-      render: (value: string) => {
-        const d = new Date(value);
-        return `${d.getDate()} ${d.toLocaleDateString("default", {
-          month: "short",
-        })}, ${d.getFullYear()}`;
+      render: (value) => {
+        const d = new Date(String(value));
+        return (
+          <>{`${d.getDate()} ${d.toLocaleDateString("default", {
+            month: "short",
+          })}, ${d.getFullYear()}`}</>
+        );
       },
     },
     {
       key: "date_published",
       label: "Publish On",
-      render: (value: string) => {
-        const d = new Date(value);
+      render: (value) => {
+        const d = new Date(String(value));
         return (
           <>
             {value !== null
@@ -97,10 +116,10 @@ export default function Page() {
     {
       key: "is_published",
       label: "Status",
-      render: (value: boolean) => {
+      render: (value) => {
         return (
           <span className=" font-semibold text-[12px]">
-            {value ? (
+            {value && typeof value === "boolean" ? (
               <span className="text-[#0B815A] bg-[#10B9811F] p-2 rounded-full">
                 Published
               </span>
@@ -116,12 +135,12 @@ export default function Page() {
     {
       key: "_id",
       label: "Actions",
-      render: (value: string) => {
+      render: (value) => {
         return (
           <div className="flex gap-2 items-center justify-center">
             <Button
               type="button"
-              onClick={() => getModalData(value)}
+              onClick={() => typeof value === "string" && getModalData(value)}
               className="bg-[#15a80d] !p-1 !rounded-lg"
             >
               <Image src={eyeIcon} alt="Edit" height={24} />
@@ -129,7 +148,8 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                redirect(`/dashboard/blog/${value}`);
+                typeof value === "string" &&
+                  redirect(`/dashboard/blog/${value}`);
               }}
               className="bg-[#6366F1] !p-1 !rounded-lg"
             >
@@ -138,7 +158,7 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                onDelete(value);
+                typeof value === "string" && onDelete(value);
               }}
               className="bg-[#AF2B0D] !p-1 !rounded-lg"
             >
@@ -183,7 +203,7 @@ export default function Page() {
     try {
       await updateBlog(blogId, JSON.stringify(formData));
 
-      const newTable = tableData.filter((blog: { _id: string }) => {
+      const newTable = tableData.filter((blog: TableRow) => {
         return blog._id !== blogId;
       });
       setTableData([...newTable]);

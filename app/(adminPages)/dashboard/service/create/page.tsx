@@ -49,13 +49,14 @@ export default function Page() {
   };
 
   const handleUpload = async (name: string) => {
-    if (!icon && !banner) return alert("Please select a file first!");
-    console.log(name);
+    if ((!icon && name === "icon") || (!banner && name === "banner")) {
+      return alert("Please select a file first!");
+    }
     try {
       const formData = new FormData();
-      if (name === "icon") {
+      if (name === "icon" && icon) {
         formData.append("file", icon);
-      } else if (name === "banner") {
+      } else if (name === "banner" && banner) {
         formData.append("file", banner);
       }
 
@@ -153,7 +154,7 @@ export default function Page() {
               errors={errors}
             />
             <TextEditor
-              {...register("description")}
+              name="description"
               placeholder="Description of the Service"
               value={content}
               onContentChange={setContent}
@@ -169,6 +170,7 @@ export default function Page() {
               <div className="flex gap-2 justify-between w-full ">
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
+                    placeholder="Upload Icon"
                     // {...register("icon")}
                     type="file"
                     name="icon"
@@ -201,6 +203,7 @@ export default function Page() {
               <div className="flex gap-2 justify-between w-full ">
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
+                    placeholder="Upload image"
                     // {...register("banner")}
                     type="file"
                     name="banner"

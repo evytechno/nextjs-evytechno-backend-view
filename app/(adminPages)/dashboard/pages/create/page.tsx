@@ -127,7 +127,6 @@ export default function Page() {
                 errors={errors}
               />
               <TextEditor
-                {...register("title")}
                 name="title"
                 placeholder="Page Title."
                 value={pageTitle}
@@ -143,6 +142,7 @@ export default function Page() {
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
                     type="file"
+                    placeholder="Upload image"
                     // {...register("image")}
                     name="image"
                     accept="image/"
@@ -168,7 +168,6 @@ export default function Page() {
         <Card>
           <FormLayout title="Description">
             <TextEditor
-              {...register("description")}
               name="description"
               placeholder="Page Description Starts here..."
               value={content}

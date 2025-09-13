@@ -4,16 +4,20 @@ const BASE_URL = `${baseUrl}/case`;
 
 export async function fetchCaseList(category: string) {
   try {
-    let resp = {};
     if (!category) {
-      resp = await fetch(`${BASE_URL}`);
+      const resp = await fetch(`${BASE_URL}`);
+      if (!resp.ok) {
+        throw new Error("Failed to fetch Cases");
+      } else {
+        return resp.json();
+      }
     } else {
-      resp = await fetch(`${BASE_URL}/?category=${category}`);
-    }
-    if (!resp.ok) {
-      throw new Error("Failed to fetch Cases");
-    } else {
-      return resp.json();
+      const resp = await fetch(`${BASE_URL}/?category=${category}`);
+      if (!resp.ok) {
+        throw new Error("Failed to fetch Cases");
+      } else {
+        return resp.json();
+      }
     }
   } catch (error) {
     console.error("ERROR", error);

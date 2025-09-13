@@ -192,6 +192,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             <div className="flex gap-2 justify-between w-full ">
               <div className="grid grid-rows-2 gap-5 items-center w-full">
                 <input
+                  placeholder="Upload Image"
                   // {...register("banner")}
                   type="file"
                   name="banner"

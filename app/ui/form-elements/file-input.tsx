@@ -9,7 +9,7 @@ const FileInput = ({
   name: string;
   placeholder: string;
   accept: string | undefined;
-  onChange: (e: ChangeEventHandler) => void;
+  onChange: ChangeEventHandler<HTMLInputElement>;
 }) => {
   return (
     <input

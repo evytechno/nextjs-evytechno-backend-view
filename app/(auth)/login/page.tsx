@@ -41,7 +41,7 @@ export default function Page() {
           <div className="w-1/3 flex flex-col items-center justify-center px-5 bg-white">
             <PageTitle>Log In</PageTitle>
             <form className="w-full" onSubmit={handleSubmit}>
-              <FormLayout>
+              <FormLayout title="">
                 <Input name="username" placeholder="Enter Username" />
                 <Input name="password" placeholder="Password" />
                 <Button type="submit" className="bg-[#6366F1]">

@@ -4,10 +4,12 @@
 //   render?: (value: any, data: Record<string, any>) => React.ReactNode;
 // };
 
-type TypeTableHead<T extends Record<string, unknown>> = {
+import React, { JSX } from "react";
+
+export type TypeTableHead<T extends Record<string, unknown>> = {
   label: string;
   key: keyof T & string;
-  render?: (value: T[keyof T], data: T) => React.ReactNode;
+  render?: (value: T[keyof T], data?: T) => JSX.Element;
 };
 
 type AdminTableProps<T extends Record<string, unknown>> = {
@@ -48,7 +50,7 @@ const AdminTable = <T extends Record<string, unknown>>({
                   >
                     {colData.render
                       ? colData.render(data[colData.key], data)
-                      : data[colData.key]}
+                      : String(data[colData.key])}
                   </td>
                 );
               })}

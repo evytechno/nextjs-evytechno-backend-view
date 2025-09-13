@@ -10,7 +10,7 @@ interface TextEditorProps {
   className?: string;
   rows: number;
   cols?: number;
-  required: boolean;
+  required?: boolean | false;
   errors?: Record<string, { message?: string }>;
 }
 
@@ -21,13 +21,13 @@ export default function TextEditor({
   // name,
   className,
   rows,
-  cols = 3,
-}: // required,
+}: // cols = 10,
+// required,
 // errors,
 // ...props
 TextEditorProps) {
   const height = rows * 24;
-  const width = cols * 8;
+  // const width = cols * 8;
   return (
     <div className={`tinymce-editor ${className}`}>
       <Editor
@@ -58,7 +58,7 @@ TextEditorProps) {
           tinycomments_author: "EvyTechno",
           placeholder: placeholder || "",
           height: height,
-          width: width,
+          // width: width,
           menubar: "", // adds happy to the menu bar
         }}
         value={value}

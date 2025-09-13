@@ -4,16 +4,20 @@ const BASE_URL = `${baseUrl}/element`;
 
 export async function fetchElementList(service: string) {
   try {
-    let resp = {};
     if (!service) {
-      resp = await fetch(`${BASE_URL}`);
+      const resp = await fetch(`${BASE_URL}`);
+      if (!resp.ok) {
+        throw new Error("Failed to fetch Elements");
+      } else {
+        return resp.json();
+      }
     } else {
-      resp = await fetch(`${BASE_URL}/?service=${service}`);
-    }
-    if (!resp.ok) {
-      throw new Error("Failed to fetch Elements");
-    } else {
-      return resp.json();
+      const resp = await fetch(`${BASE_URL}/?service=${service}`);
+      if (!resp.ok) {
+        throw new Error("Failed to fetch Elements");
+      } else {
+        return resp.json();
+      }
     }
   } catch (error) {
     console.error("ERROR", error);

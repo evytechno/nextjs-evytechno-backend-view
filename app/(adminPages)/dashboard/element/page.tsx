@@ -5,7 +5,7 @@ import {
   fetchElementList,
   updateElement,
 } from "@/app/API/element.route";
-import AdminTable from "@/app/ui/admin-table/admin-table";
+import AdminTable, { TypeTableHead } from "@/app/ui/admin-table/admin-table";
 import { Button } from "@/app/ui/buttons/button";
 import PageHeader from "@/app/ui/page-header/page-header";
 import Image from "next/image";
@@ -24,11 +24,20 @@ import TableSkeleton from "@/app/ui/skeleton/table-skeleton";
 
 type ModalData = {
   image?: string;
-  title?: string;
+  title: string | TrustedHTML;
   name?: string;
   category?: { name: string };
   description: string | TrustedHTML;
   // add other fields you need
+};
+
+type TableRow = {
+  icon: string;
+  image: string;
+  name: string;
+  title: string;
+  service: { name: string } | string;
+  _id: string;
 };
 
 export default function Page() {
@@ -41,23 +50,23 @@ export default function Page() {
     setModalOpen(true);
   }
 
-  const tableHead = [
+  const tableHead: TypeTableHead<TableRow>[] = [
     {
       key: "icon",
       label: "Image and Icon",
-      render: (value: string, data: { image: string }) => {
+      render: (value, data) => {
         // console.log("data at table", data);
 
         return (
           <div className="flex gap-2">
-            {data.image && (
+            {data && data.image && "image" in data && (
               <img
                 src={data.image}
                 className="w-10 h-10 object-cover rounded-md border-2 border-[#cccccc70]"
                 alt="Image"
               />
             )}
-            {value && (
+            {value && typeof value === "string" && (
               <img src={value} className="w-10 h-10 rounded-full" alt="Icon" />
             )}
           </div>
@@ -67,14 +76,18 @@ export default function Page() {
     {
       key: "name",
       label: "Element Name",
-      render: (value: string) => {
-        return <span className="font-semibold">{value}</span>;
+      render: (value) => {
+        return (
+          <span className="font-semibold">
+            {value !== null ? String(value) : "No name"}
+          </span>
+        );
       },
     },
     {
       key: "title",
       label: "Title",
-      render: (value: string) => {
+      render: (value) => {
         // return <span className="font-semibold">{value}</span>;
         return (
           <div
@@ -94,19 +107,27 @@ export default function Page() {
     {
       key: "service",
       label: "Service",
-      render: (value: { name: string }) => {
-        return <span className="text-sm">{value && value?.name}</span>;
+      render: (value) => {
+        return (
+          <span className="text-sm">
+            {typeof value === "object" && value !== null && "name" in value
+              ? value.name
+              : "-"}
+          </span>
+        );
       },
     },
     {
       key: "_id",
       label: "Actions",
-      render: (value: string) => {
+      render: (value) => {
         return (
           <div className="flex gap-2">
             <Button
               type="button"
-              onClick={() => getModalData(value)}
+              onClick={() => {
+                typeof value === "string" && getModalData(value);
+              }}
               className="bg-[#15a80d] !p-1 !rounded-lg"
             >
               <Image src={eyeIcon} alt="Edit" height={24} />
@@ -114,7 +135,8 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                redirect(`/dashboard/element/${value}`);
+                typeof value === "string" &&
+                  redirect(`/dashboard/element/${value}`);
               }}
               className="bg-[#6366F1] !p-1 !rounded-lg"
             >
@@ -123,7 +145,7 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                onDelete(value);
+                typeof value === "string" && onDelete(value);
               }}
               className="bg-[#AF2B0D] !p-1 !rounded-lg"
             >
@@ -229,7 +251,7 @@ export default function Page() {
           {tableData.length === 0 ? (
             <span>No Data</span>
           ) : (
-            <AdminTable tableHead={tableHead} tableData={tableData} />
+            <AdminTable<TableRow> tableHead={tableHead} tableData={tableData} />
           )}
         </>
       )}

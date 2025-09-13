@@ -1,6 +1,6 @@
 "use client";
 
-import AdminTable from "@/app/ui/admin-table/admin-table";
+import AdminTable, { TypeTableHead } from "@/app/ui/admin-table/admin-table";
 import { Button } from "@/app/ui/buttons/button";
 import PageHeader from "@/app/ui/page-header/page-header";
 import Image from "next/image";
@@ -18,10 +18,28 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Modal from "@/app/ui/modal/modal";
 
+type ModalData = {
+  banner?: string;
+  name: string;
+
+  description: string | TrustedHTML;
+  // add other fields you need
+};
+type TableRow = {
+  icon: string;
+  banner: string;
+  name: string;
+  category: { name: string } | string;
+  date_created: string;
+  date_published: string;
+  is_published: boolean;
+  _id: string;
+};
+
 export default function Page() {
-  const [modalData, setModalData] = useState<object>();
+  const [modalData, setModalData] = useState<ModalData | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState<TableRow[]>([]);
 
   async function getModalData(id: string) {
     const data = await fetchService(id);
@@ -29,12 +47,16 @@ export default function Page() {
     setModalOpen(true);
   }
 
-  const tableHead = [
+  const tableHead: TypeTableHead<TableRow>[] = [
     {
       key: "name",
       label: "Name",
-      render: (value: string) => {
-        return <span className="font-semibold">{value}</span>;
+      render: (value) => {
+        return (
+          <span className="font-semibold">
+            {value !== null ? String(value) : "-"}
+          </span>
+        );
       },
     },
 
@@ -49,19 +71,19 @@ export default function Page() {
     {
       key: "icon",
       label: "Image and Icon",
-      render: (value: string, data: object) => {
+      render: (value, data) => {
         // console.log("data at table", data);
 
         return (
           <div className="flex gap-2">
-            {data.banner && (
+            {data && data.banner && "banner" in data && (
               <img
                 src={data.banner}
                 className="w-10 h-10  object-cover rounded-md border-2 border-[#cccccc70]"
                 alt="Image"
               />
             )}
-            {value && (
+            {typeof value === "string" && (
               <img src={value} className="w-10 h-10 rounded-full" alt="Icon" />
             )}
           </div>
@@ -79,7 +101,7 @@ export default function Page() {
     {
       key: "is_published",
       label: "Status",
-      render: (value: boolean) => {
+      render: (value) => {
         return (
           <span className=" font-semibold text-[12px]">
             {value ? (
@@ -98,12 +120,12 @@ export default function Page() {
     {
       key: "_id",
       label: "Actions",
-      render: (value: string) => {
+      render: (value) => {
         return (
           <div className="flex gap-2">
             <Button
               type="button"
-              onClick={() => getModalData(value)}
+              onClick={() => typeof value === "string" && getModalData(value)}
               className="bg-[#15a80d] !p-1 !rounded-lg"
             >
               <Image src={eyeIcon} alt="Edit" height={24} />
@@ -120,7 +142,7 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                onDelete(value);
+                typeof value === "string" && onDelete(value);
               }}
               className="bg-[#AF2B0D] !p-1 !rounded-lg"
             >
