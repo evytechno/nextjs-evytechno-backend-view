@@ -18,6 +18,7 @@ import { redirect } from "next/navigation";
 import { elementSchema } from "./element.schema";
 
 import { uploadFile } from "@/app/API/upload.route";
+import LinksTable from "@/app/ui/form-elements/links-table";
 
 type FormData = z.infer<typeof elementSchema>;
 
@@ -272,20 +273,28 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             </FormLayout>
           </Card>
         </div>
-        <Card>
-          <FormLayout title="Title and Description">
-            <TextEditor
-              // {...register("description")}
-              name="description"
-              value={content}
-              placeholder="Description of Element"
-              onContentChange={setContent}
-              rows={8}
-              required={true}
-              errors={errors}
-            />
-          </FormLayout>
-        </Card>
+        <div className="flex gap-5 justify-between ">
+          <Card>
+            <FormLayout title="Title and Description">
+              <TextEditor
+                // {...register("description")}
+                name="description"
+                value={content}
+                placeholder="Description of Element"
+                onContentChange={setContent}
+                rows={15}
+                required={true}
+                errors={errors}
+              />
+            </FormLayout>
+          </Card>
+          <Card className="max-w-[25%]">
+            <h2 className="text-lg font-semibold pb-1.5">Links</h2>
+            <div className="max-h-[360px] overflow-y-auto border-2 border-[#E5E7EB] rounded-2xl">
+              <LinksTable content={content} />
+            </div>
+          </Card>
+        </div>
       </form>
     </div>
   );

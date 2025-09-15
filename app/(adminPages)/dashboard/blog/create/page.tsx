@@ -225,7 +225,7 @@ export default function Page() {
             </FormLayout>
           </Card>
           <Card className="max-w-[25%]">
-            <h2 className="text-lg font-semibold pb-1.5">Links Table</h2>
+            <h2 className="text-lg font-semibold pb-1.5">Links </h2>
             <div className="max-h-[360px] overflow-y-auto border-2 border-[#E5E7EB] rounded-2xl">
               <LinksTable content={content} />
             </div>

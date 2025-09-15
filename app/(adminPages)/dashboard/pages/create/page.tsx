@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
+import LinksTable from "@/app/ui/form-elements/links-table";
 
 type FormData = z.infer<typeof PageSchema>;
 
@@ -165,17 +166,25 @@ export default function Page() {
           </Card>
         </div>
         {/* ContentCard  */}
-        <Card>
-          <FormLayout title="Description">
-            <TextEditor
-              name="description"
-              placeholder="Page Description Starts here..."
-              value={content}
-              onContentChange={setContent}
-              rows={10}
-            />
-          </FormLayout>
-        </Card>
+        <div className="flex gap-5 justify-between ">
+          <Card>
+            <FormLayout title="Description">
+              <TextEditor
+                name="description"
+                placeholder="Page Description Starts here..."
+                value={content}
+                onContentChange={setContent}
+                rows={15}
+              />
+            </FormLayout>
+          </Card>
+          <Card className="max-w-[25%]">
+            <h2 className="text-lg font-semibold pb-1.5">Links</h2>
+            <div className="max-h-[360px] overflow-y-auto border-2 border-[#E5E7EB] rounded-2xl">
+              <LinksTable content={content} />
+            </div>
+          </Card>
+        </div>
       </form>
     </div>
   );

@@ -64,7 +64,8 @@ body {
   border-bottom-right-radius: var(--radius-3xl) !important;
 }
 
-.hello-admin-card {
+.hello-admin-card,
+.layout-header {
   z-index: 99;
 }
 

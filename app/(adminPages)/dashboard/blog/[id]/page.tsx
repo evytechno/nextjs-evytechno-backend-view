@@ -19,6 +19,7 @@ import { blogSchema } from "./blog.schema";
 import { fetchServiceList } from "@/app/API/services.route";
 import { redirect } from "next/navigation";
 import { uploadFile } from "@/app/API/upload.route";
+import LinksTable from "@/app/ui/form-elements/links-table";
 
 type FormData = z.infer<typeof blogSchema>;
 
@@ -118,7 +119,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
     getData(blogId);
     console.log("BLOGDATA", blogData);
-  }, [reset, blogData, blogId]);
+  }, [reset, blogId]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -222,24 +223,32 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         </Card>
 
         {/* ContentCard  */}
-        <Card>
-          <FormLayout title="Content">
-            <TextEditor
-              // {...register("content")}
-              placeholder="Blog Content Starts here..."
-              value={content}
-              onContentChange={setContent}
-              rows={20}
-              name="content"
-              required={true}
-            />
+        <div className="flex gap-5 justify-between ">
+          <Card>
+            <FormLayout title="Content">
+              <TextEditor
+                // {...register("content")}
+                placeholder="Blog Content Starts here..."
+                value={content}
+                onContentChange={setContent}
+                rows={15}
+                name="content"
+                required={true}
+              />
 
-            {/* <div className="p-2 border rounded">
+              {/* <div className="p-2 border rounded">
               <strong>Preview:</strong>
               <div dangerouslySetInnerHTML={{ __html: content }} />
             </div> */}
-          </FormLayout>
-        </Card>
+            </FormLayout>
+          </Card>
+          <Card className="max-w-[25%]">
+            <h2 className="text-lg font-semibold pb-1.5">Links</h2>
+            <div className="max-h-[360px] overflow-y-auto border-2 border-[#E5E7EB] rounded-2xl">
+              <LinksTable content={content} />
+            </div>
+          </Card>
+        </div>
 
         {/* <MetaCard /> */}
         <Card>
