@@ -25,7 +25,7 @@ export default function TableSkeleton({
             return (
               <th
                 className="p-5 bg-blend border-l-1 border-r-1  border-[#000]/5"
-                key={id.key}
+                key={id.key.toString()}
               >
                 <Skeleton width="70%" height="24px" />
               </th>
@@ -40,7 +40,7 @@ export default function TableSkeleton({
               {tableHead.map((j) => {
                 return (
                   <td
-                    key={j.key}
+                    key={j.key.toString()}
                     className="p-5 border-l-1 border-r-1  border-[#000]/5"
                   >
                     <Skeleton
