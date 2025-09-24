@@ -8,11 +8,10 @@ import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
 
 import { fetchBlog, updateBlog } from "@/app/API/blog.route";
-import { convertToFormData, toBase64 } from "@/app/utils/helpers/index";
 
 import { use, useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { z } from "zod";
+import { object, z } from "zod";
 import { Button } from "@/app/ui/buttons/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +19,7 @@ import { blogSchema } from "./blog.schema";
 import { fetchServiceList } from "@/app/API/services.route";
 import { redirect } from "next/navigation";
 import { uploadFile } from "@/app/API/upload.route";
+import LinksTable from "@/app/ui/form-elements/links-table";
 
 type FormData = z.infer<typeof blogSchema>;
 
@@ -59,7 +59,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: object) => {
     try {
       if (isPublished) {
         e = { ...e, date_published: new Date().toISOString() };
@@ -119,7 +119,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
     getData(blogId);
     console.log("BLOGDATA", blogData);
-  }, [reset]);
+  }, [reset, blogId]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -133,7 +133,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 Update your Blog
               </span>
               <div className="flex gap-3">
-                <Button type="submit" className="bg-[#1C2536]">
+                <Button className="bg-[#1C2536]" type="submit">
                   Save
                 </Button>
                 <Button
@@ -144,9 +144,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                   Publish
                 </Button>
                 <Button
-                  type="button"
                   className="bg-red-400/20 !text-red-800 "
                   onClick={() => redirect(`/dashboard/blog`)}
+                  type="button"
                 >
                   Cancel
                 </Button>
@@ -193,13 +193,14 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             <div className="flex gap-2 justify-between w-full ">
               <div className="grid grid-rows-2 gap-5 items-center w-full">
                 <input
-                  {...register("banner")}
+                  placeholder="Upload Image"
+                  // {...register("banner")}
                   type="file"
                   name="banner"
                   accept="image/"
                   className={
-                    "w-full border-2 border-[#E5E7EB] rounded-3xl p-3" +
-                    (errors && errors["banner"] ? " border-red-500" : "")
+                    "w-full border-2 border-[#E5E7EB] rounded-3xl p-3"
+                    // (errors && errors["banner"] ? " border-red-500" : "")
                   }
                   onChange={(e) => handleFileChange(e)}
                 />
@@ -214,32 +215,40 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               {preview && (
                 <img src={preview} alt="preview" height={100} width={100} />
               )}
-              {errors && errors["banner"] && errors["banner"].message && (
+              {/* {errors && errors["banner"] && errors["banner"].message && (
                 <p className="text-red-500">{errors["banner"].message}</p>
-              )}
+              )} */}
             </div>
           </FormLayout>
         </Card>
 
         {/* ContentCard  */}
-        <Card>
-          <FormLayout title="Content">
-            <TextEditor
-              {...register("content")}
-              placeholder="Blog Content Starts here..."
-              value={content}
-              onContentChange={setContent}
-              rows={20}
-              name="content"
-              required={true}
-            />
+        <div className="flex gap-5 justify-between ">
+          <Card>
+            <FormLayout title="Content">
+              <TextEditor
+                // {...register("content")}
+                placeholder="Blog Content Starts here..."
+                value={content}
+                onContentChange={setContent}
+                rows={15}
+                name="content"
+                required={true}
+              />
 
-            {/* <div className="p-2 border rounded">
+              {/* <div className="p-2 border rounded">
               <strong>Preview:</strong>
               <div dangerouslySetInnerHTML={{ __html: content }} />
             </div> */}
-          </FormLayout>
-        </Card>
+            </FormLayout>
+          </Card>
+          <Card className="max-w-[25%]">
+            <h2 className="text-lg font-semibold pb-1.5">Links</h2>
+            <div className="max-h-[360px] overflow-y-auto border-2 border-[#E5E7EB] rounded-2xl">
+              <LinksTable content={content} />
+            </div>
+          </Card>
+        </div>
 
         {/* <MetaCard /> */}
         <Card>

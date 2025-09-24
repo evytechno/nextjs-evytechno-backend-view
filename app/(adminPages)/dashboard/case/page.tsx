@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AdminTable from "../../../ui/admin-table/admin-table";
+import AdminTable, { TypeTableHead } from "../../../ui/admin-table/admin-table";
 import PageHeader from "../../../ui/page-header/page-header";
 
 import { Button } from "@/app/ui/buttons/button";
@@ -13,14 +13,31 @@ import eyeIcon from "@/public/static/mingcute--eye-line.png";
 import Swal from "sweetalert2";
 import { fetchCase, fetchCaseList, updateCase } from "@/app/API/case.route";
 import Modal from "@/app/ui/modal/modal";
-import Card from "@/app/ui/card/card";
+
 import TableSkeleton from "@/app/ui/skeleton/table-skeleton";
+
+type ModalData = {
+  // banner?: string;
+  name?: string;
+  category?: { name: string };
+  description: string | TrustedHTML;
+  // add other fields you need
+};
+
+type TableRow = {
+  name: string;
+  category: { name: string } | string;
+  start_date: string;
+  end_date: string;
+  is_published: boolean;
+  _id: string;
+};
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState<TableRow[]>([]);
   const [category, setCategory] = useState("");
-  const [modalData, setModalData] = useState<any>(null);
+  const [modalData, setModalData] = useState<ModalData | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   async function getModalData(id: string) {
@@ -29,12 +46,16 @@ export default function Page() {
     setModalOpen(true);
   }
 
-  const tableHead = [
+  const tableHead: TypeTableHead<TableRow>[] = [
     {
       key: "name",
       label: "Case Title",
-      render: (value: string) => {
-        return <span className="font-semibold">{value}</span>;
+      render: (value) => {
+        return (
+          <span className="font-semibold">
+            {value !== null ? String(value) : "No Title available"}
+          </span>
+        );
       },
     },
     {
@@ -42,39 +63,51 @@ export default function Page() {
       label: "Category",
       render: (value) => {
         return (
-          <span className="text-[#6C737F]">{value ? value.name : "-"}</span>
+          <span className="text-[#6C737F]">
+            {typeof value === "object" && value !== null && "name" in value
+              ? value.name
+              : "-"}
+          </span>
         );
       },
     },
     {
       key: "start_date",
       label: "Start Date",
-      render: (value: string) => {
-        const d = new Date(value);
-        return value
-          ? `${d.getDate()} ${d.toLocaleDateString("default", {
-              month: "short",
-            })}, ${d.getFullYear()}`
-          : "-";
+      render: (value) => {
+        const d = new Date(String(value));
+        return (
+          <>
+            {value
+              ? `${d.getDate()} ${d.toLocaleDateString("default", {
+                  month: "short",
+                })}, ${d.getFullYear()}`
+              : "-"}
+          </>
+        );
       },
     },
     {
       key: "end_date",
       label: "End Date",
-      render: (value: string) => {
-        const d = new Date(value);
-        return value
-          ? `${d.getDate()} ${d.toLocaleDateString("default", {
-              month: "short",
-            })}, ${d.getFullYear()}`
-          : "-";
+      render: (value) => {
+        const d = new Date(String(value));
+        return (
+          <>
+            {value
+              ? `${d.getDate()} ${d.toLocaleDateString("default", {
+                  month: "short",
+                })}, ${d.getFullYear()}`
+              : "-"}
+          </>
+        );
       },
     },
 
     {
       key: "is_published",
       label: "Status",
-      render: (value: boolean) => {
+      render: (value) => {
         return (
           <span className=" font-semibold text-[12px]">
             {value ? (
@@ -93,12 +126,12 @@ export default function Page() {
     {
       key: "_id",
       label: "Actions",
-      render: (value: string) => {
+      render: (value) => {
         return (
           <div className="flex gap-2">
             <Button
               type="button"
-              onClick={() => getModalData(value)}
+              onClick={() => typeof value === "string" && getModalData(value)}
               className="bg-[#15a80d] !p-1 !rounded-lg"
             >
               <Image src={eyeIcon} alt="Edit" height={24} />
@@ -106,7 +139,8 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                redirect(`/dashboard/case/${value}`);
+                typeof value === "string" &&
+                  redirect(`/dashboard/case/${value}`);
               }}
               className="bg-[#6366F1] !p-1 !rounded-lg"
             >
@@ -115,7 +149,7 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                onDelete(value);
+                typeof value === "string" && onDelete(value);
               }}
               className="bg-[#AF2B0D] !p-1 !rounded-lg"
             >
@@ -127,24 +161,24 @@ export default function Page() {
     },
   ];
 
-  const tableDataStatic = [
-    {
-      id: "abdasdkajd",
-      name: "ABCDEd",
-      start_date: "2025-08-28T06:42:48.838+00:00",
-      is_published: true,
+  // const tableDataStatic = [
+  //   {
+  //     id: "abdasdkajd",
+  //     name: "ABCDEd",
+  //     start_date: "2025-08-28T06:42:48.838+00:00",
+  //     is_published: true,
 
-      category: "SEO",
-    },
-    {
-      id: "abdasdkajdasdasd",
-      name: "ABCDEd",
-      start_date: "2025-08-28T06:42:48.838+00:00",
-      is_published: false,
+  //     category: "SEO",
+  //   },
+  //   {
+  //     id: "abdasdkajdasdasd",
+  //     name: "ABCDEd",
+  //     start_date: "2025-08-28T06:42:48.838+00:00",
+  //     is_published: false,
 
-      category: "SEO",
-    },
-  ];
+  //     category: "SEO",
+  //   },
+  // ];
   async function getData() {
     setIsLoading(true);
     const caseList = await fetchCaseList(category);
@@ -158,9 +192,9 @@ export default function Page() {
     console.log(caseId);
 
     try {
-      const resp = await updateCase(caseId, JSON.stringify(formData));
+      await updateCase(caseId, JSON.stringify(formData));
 
-      const newTable = tableData.filter((item) => {
+      const newTable = tableData.filter((item: { _id: string }) => {
         return item._id !== caseId;
       });
       setTableData([...newTable]);
@@ -200,9 +234,11 @@ export default function Page() {
         {modalData && (
           <div className="max-h-80vh overflow-y-auto space-y-4">
             <h1 className="text-3xl font-bold">{modalData.name}</h1>
-            <span className="text-[#6C737F] text-sm">
-              Category: {modalData.category.name}
-            </span>
+            {modalData.category && (
+              <span className="text-[#6C737F] text-sm">
+                Category: {modalData.category.name}
+              </span>
+            )}
             <div
               className="prose mt-3  "
               dangerouslySetInnerHTML={{ __html: modalData.description }}

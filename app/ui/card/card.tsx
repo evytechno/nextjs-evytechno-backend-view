@@ -3,11 +3,13 @@ const Card = ({
   className,
 }: {
   children: React.ReactNode;
-  className: string;
+  className?: string;
 }) => {
   return (
     <div
-      className={` w-full h-auto shadow-lg rounded-3xl p-5 border border-[#ccc]/40 ${className}`}
+      className={` w-full h-auto shadow-lg rounded-3xl p-5 border border-[#ccc]/40 ${
+        className ? className : ""
+      }`}
     >
       {children}
     </div>

@@ -18,7 +18,7 @@ import { redirect } from "next/navigation";
 import { elementSchema } from "./element.schema";
 
 import { uploadFile } from "@/app/API/upload.route";
-import Image from "next/image";
+import LinksTable from "@/app/ui/form-elements/links-table";
 
 type FormData = z.infer<typeof elementSchema>;
 
@@ -63,9 +63,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
     try {
       const formData = new FormData();
-      if (name === "icon") {
+      if (name === "icon" && icon) {
         formData.append("file", icon);
-      } else if (name === "image") {
+      } else if (name === "image" && image) {
         formData.append("file", image);
       }
 
@@ -81,7 +81,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: object) => {
     console.log("data.....", e);
     console.log(e);
 
@@ -142,7 +142,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       setService(data.data.service);
     }
     getData(elementId);
-  }, [reset]);
+  }, [reset, elementId]);
   return (
     <div className="flex flex-col gap-10">
       {/* <PageTitle>Create a New Element</PageTitle> */}
@@ -198,7 +198,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 onChange={(e) => setService(e.target.value)}
               />
               <TextEditor
-                {...register("title")}
+                // {...register("title")}
+                name="title"
                 value={title}
                 placeholder="Title of Element"
                 onContentChange={setTitle}
@@ -214,7 +215,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               <div className="flex gap-2 justify-between w-full ">
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
-                    {...register("image")}
+                    // {...register("image")}
                     type="file"
                     name="image"
                     accept="image/"
@@ -243,7 +244,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               <div className="flex gap-2 justify-between w-full">
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
-                    {...register("icon")}
+                    // {...register("icon")}
+                    placeholder="Upload Icon"
                     type="file"
                     name="icon"
                     accept="image/"
@@ -271,19 +273,28 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             </FormLayout>
           </Card>
         </div>
-        <Card>
-          <FormLayout title="Title and Description">
-            <TextEditor
-              {...register("description")}
-              value={content}
-              placeholder="Description of Element"
-              onContentChange={setContent}
-              rows={8}
-              required={true}
-              errors={errors}
-            />
-          </FormLayout>
-        </Card>
+        <div className="flex gap-5 justify-between ">
+          <Card>
+            <FormLayout title="Title and Description">
+              <TextEditor
+                // {...register("description")}
+                name="description"
+                value={content}
+                placeholder="Description of Element"
+                onContentChange={setContent}
+                rows={15}
+                required={true}
+                errors={errors}
+              />
+            </FormLayout>
+          </Card>
+          <Card className="max-w-[25%]">
+            <h2 className="text-lg font-semibold pb-1.5">Links</h2>
+            <div className="max-h-[360px] overflow-y-auto border-2 border-[#E5E7EB] rounded-2xl">
+              <LinksTable content={content} />
+            </div>
+          </Card>
+        </div>
       </form>
     </div>
   );

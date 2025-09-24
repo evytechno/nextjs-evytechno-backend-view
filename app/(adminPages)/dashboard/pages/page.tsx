@@ -1,5 +1,5 @@
 "use client";
-import AdminTable from "@/app/ui/admin-table/admin-table";
+import AdminTable, { TypeTableHead } from "@/app/ui/admin-table/admin-table";
 import { Button } from "@/app/ui/buttons/button";
 import PageHeader from "@/app/ui/page-header/page-header";
 import Image from "next/image";
@@ -14,29 +14,51 @@ import { useEffect, useState } from "react";
 import Modal from "@/app/ui/modal/modal";
 import TableSkeleton from "@/app/ui/skeleton/table-skeleton";
 
+type ModalData = {
+  image?: string;
+  title: string | TrustedHTML;
+  name?: string;
+
+  description: string | TrustedHTML;
+  // add other fields you need
+};
+
+type TableRow = {
+  name: string;
+  title: string;
+  description: string;
+
+  is_published: boolean;
+  _id: string;
+};
+
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
-  const [modalData, setModalData] = useState<any>(null);
+  const [modalData, setModalData] = useState<ModalData | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   async function getModalData(id: string) {
     const data = await fetchPage(id);
     await setModalData({ ...data.data });
     setModalOpen(true);
   }
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState<TableRow[]>([]);
 
-  const tableHead = [
+  const tableHead: TypeTableHead<TableRow>[] = [
     {
       key: "name",
       label: "Name",
-      render: (value: string) => {
-        return <span className="font-semibold">{value}</span>;
+      render: (value) => {
+        return (
+          <span className="font-semibold">
+            {value !== null ? String(value) : "-"}
+          </span>
+        );
       },
     },
     {
       key: "title",
       label: "Title",
-      render: (value: string) => {
+      render: (value) => {
         return (
           <div
             className="prose text-md line-clamp-2"
@@ -48,7 +70,7 @@ export default function Page() {
     {
       key: "description",
       label: "Description",
-      render: (value: string) => {
+      render: (value) => {
         return (
           <div
             className="prose text-sm line-clamp-2"
@@ -61,7 +83,7 @@ export default function Page() {
     {
       key: "is_published",
       label: "Status",
-      render: (value: boolean) => {
+      render: (value) => {
         return (
           <span className=" font-semibold text-[12px]">
             {value ? (
@@ -80,12 +102,16 @@ export default function Page() {
     {
       key: "_id",
       label: "Actions",
-      render: (value: string) => {
+      render: (value) => {
         return (
           <div className="flex gap-2">
             <Button
               type="button"
-              onClick={() => getModalData(value)}
+              onClick={() => {
+                if (typeof value === "string") {
+                  getModalData(value);
+                }
+              }}
               className="bg-[#15a80d] !p-1 !rounded-lg"
             >
               <Image src={eyeIcon} alt="Edit" height={24} />
@@ -93,7 +119,9 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                redirect(`/dashboard/pages/${value}`);
+                if (typeof value === "string") {
+                  redirect(`/dashboard/pages/${value}`);
+                }
               }}
               className="bg-[#6366F1] !p-1 !rounded-lg"
             >
@@ -102,7 +130,9 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                onDelete(value);
+                if (typeof value === "string") {
+                  onDelete(value);
+                }
               }}
               className="bg-[#AF2B0D] !p-1 !rounded-lg"
             >
@@ -127,7 +157,7 @@ export default function Page() {
     console.log(pageId);
 
     try {
-      const resp = await updatePage(pageId, JSON.stringify(formData));
+      await updatePage(pageId, JSON.stringify(formData));
 
       const newTable = tableData.filter((page) => {
         return page._id !== pageId;
@@ -144,16 +174,16 @@ export default function Page() {
     }
   };
 
-  const tableDataStatic = [
-    {
-      _id: "68ac4ccaf6405d14145c26be",
-      name: "About",
-      title: "Innovate. Create. Dominate– The Evy Techno Way",
-      description:
-        "At Evy Techno Where Creativity Meets Algorithms, we are a dynamic team of innovators, strategists, and tech enthusiasts dedicated to transforming businesses through cutting-edge digital solutions. With expertise in web development, app development, graphic designing, search engine optimization (SEO), and digital marketing, we help brands establish a powerful online presence and stay ahead in the digital era. Our mission is to craft intuitive, high-performance websites and applications that drive engagement and growth. Whether you need a stunning website, a feature-rich mobile app, or a robust digital marketing strategy, Evy Techno ensures top-tier solutions tailored to your needs. We believe in innovation, creativity, and result-driven strategies, making us the trusted technology partner for startups, enterprises, and growing businesses. Let’s build something extraordinary together!",
-      image: "./abc/cd.png",
-    },
-  ];
+  // const tableDataStatic = [
+  //   {
+  //     _id: "68ac4ccaf6405d14145c26be",
+  //     name: "About",
+  //     title: "Innovate. Create. Dominate– The Evy Techno Way",
+  //     description:
+  //       "At Evy Techno Where Creativity Meets Algorithms, we are a dynamic team of innovators, strategists, and tech enthusiasts dedicated to transforming businesses through cutting-edge digital solutions. With expertise in web development, app development, graphic designing, search engine optimization (SEO), and digital marketing, we help brands establish a powerful online presence and stay ahead in the digital era. Our mission is to craft intuitive, high-performance websites and applications that drive engagement and growth. Whether you need a stunning website, a feature-rich mobile app, or a robust digital marketing strategy, Evy Techno ensures top-tier solutions tailored to your needs. We believe in innovation, creativity, and result-driven strategies, making us the trusted technology partner for startups, enterprises, and growing businesses. Let’s build something extraordinary together!",
+  //     image: "./abc/cd.png",
+  //   },
+  // ];
 
   useEffect(() => {
     getData();
@@ -178,7 +208,11 @@ export default function Page() {
         {modalData && (
           <div className="max-h-80vh overflow-y-auto space-y-4">
             {modalData.image && (
-              <img src={modalData.image} className="w-full h-auto" />
+              <img
+                src={modalData.image}
+                className="w-full h-auto"
+                alt="modal image"
+              />
             )}
             <div
               className="prose text-3xl font-bold "

@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
 import { createCase } from "@/app/API/case.route";
 import { redirect } from "next/navigation";
+import LinksTable from "@/app/ui/form-elements/links-table";
 
 type FormData = z.infer<typeof caseSchena>;
 
@@ -30,7 +31,7 @@ export default function Page() {
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const [options, setOptions] = useState([]);
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: object) => {
     console.log("data.....", e);
     console.log(e);
 
@@ -172,20 +173,27 @@ export default function Page() {
         </Card>
 
         {/* Case Details  */}
-
-        <Card>
-          <FormLayout title="Case Details">
-            <TextEditor
-              // {...register("description")}
-              placeholder="Case Content Starts here..."
-              value={content}
-              onContentChange={setContent}
-              rows={10}
-              name="description"
-              required={true}
-            />
-          </FormLayout>
-        </Card>
+        <div className="flex gap-5 justify-between ">
+          <Card>
+            <FormLayout title="Case Details">
+              <TextEditor
+                // {...register("description")}
+                placeholder="Case Content Starts here..."
+                value={content}
+                onContentChange={setContent}
+                rows={15}
+                name="description"
+                required={true}
+              />
+            </FormLayout>
+          </Card>
+          <Card className="max-w-[25%]">
+            <h2 className="text-lg font-semibold pb-1.5">Links</h2>
+            <div className="max-h-[360px] overflow-y-auto border-2 border-[#E5E7EB] rounded-2xl">
+              <LinksTable content={content} />
+            </div>
+          </Card>
+        </div>
       </form>
     </div>
   );

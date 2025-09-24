@@ -5,7 +5,7 @@ import {
   fetchElementList,
   updateElement,
 } from "@/app/API/element.route";
-import AdminTable from "@/app/ui/admin-table/admin-table";
+import AdminTable, { TypeTableHead } from "@/app/ui/admin-table/admin-table";
 import { Button } from "@/app/ui/buttons/button";
 import PageHeader from "@/app/ui/page-header/page-header";
 import Image from "next/image";
@@ -22,9 +22,27 @@ import { fetchServiceList } from "@/app/API/services.route";
 import Modal from "@/app/ui/modal/modal";
 import TableSkeleton from "@/app/ui/skeleton/table-skeleton";
 
+type ModalData = {
+  image?: string;
+  title: string | TrustedHTML;
+  name?: string;
+  category?: { name: string };
+  description: string | TrustedHTML;
+  // add other fields you need
+};
+
+type TableRow = {
+  icon: string;
+  image: string;
+  name: string;
+  title: string;
+  service: { name: string } | string;
+  _id: string;
+};
+
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
-  const [modalData, setModalData] = useState<any>(null);
+  const [modalData, setModalData] = useState<ModalData | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   async function getModalData(id: string) {
     const data = await fetchElement(id);
@@ -32,23 +50,23 @@ export default function Page() {
     setModalOpen(true);
   }
 
-  const tableHead = [
+  const tableHead: TypeTableHead<TableRow>[] = [
     {
       key: "icon",
       label: "Image and Icon",
-      render: (value: string, data: any) => {
+      render: (value, data) => {
         // console.log("data at table", data);
 
         return (
           <div className="flex gap-2">
-            {data.image && (
+            {data && data.image && "image" in data && (
               <img
                 src={data.image}
                 className="w-10 h-10 object-cover rounded-md border-2 border-[#cccccc70]"
                 alt="Image"
               />
             )}
-            {value && (
+            {value && typeof value === "string" && (
               <img src={value} className="w-10 h-10 rounded-full" alt="Icon" />
             )}
           </div>
@@ -58,14 +76,18 @@ export default function Page() {
     {
       key: "name",
       label: "Element Name",
-      render: (value: string) => {
-        return <span className="font-semibold">{value}</span>;
+      render: (value) => {
+        return (
+          <span className="font-semibold">
+            {value !== null ? String(value) : "No name"}
+          </span>
+        );
       },
     },
     {
       key: "title",
       label: "Title",
-      render: (value: string) => {
+      render: (value) => {
         // return <span className="font-semibold">{value}</span>;
         return (
           <div
@@ -85,19 +107,27 @@ export default function Page() {
     {
       key: "service",
       label: "Service",
-      render: (value: object) => {
-        return <span className="text-sm">{value?.name}</span>;
+      render: (value) => {
+        return (
+          <span className="text-sm">
+            {typeof value === "object" && value !== null && "name" in value
+              ? value.name
+              : "-"}
+          </span>
+        );
       },
     },
     {
       key: "_id",
       label: "Actions",
-      render: (value: string) => {
+      render: (value) => {
         return (
           <div className="flex gap-2">
             <Button
               type="button"
-              onClick={() => getModalData(value)}
+              onClick={() => {
+                typeof value === "string" && getModalData(value);
+              }}
               className="bg-[#15a80d] !p-1 !rounded-lg"
             >
               <Image src={eyeIcon} alt="Edit" height={24} />
@@ -105,7 +135,8 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                redirect(`/dashboard/element/${value}`);
+                typeof value === "string" &&
+                  redirect(`/dashboard/element/${value}`);
               }}
               className="bg-[#6366F1] !p-1 !rounded-lg"
             >
@@ -114,7 +145,7 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                onDelete(value);
+                typeof value === "string" && onDelete(value);
               }}
               className="bg-[#AF2B0D] !p-1 !rounded-lg"
             >
@@ -125,32 +156,32 @@ export default function Page() {
       },
     },
   ];
-  const tableDataStatic = [
-    {
-      _id: "68ac4ccaf6405d14145c26be",
-      name: "Custom Website Development",
-      icon: "./def/imh.jpg",
-      description:
-        "Tailored to meet your unique business needs and goals, we offer:",
-      service: "Web Dev",
-    },
-    {
-      _id: "68ac4cf5f6405d14145c26c2",
-      name: "On Page SEO",
-      icon: "./def/imh.jpg",
-      description:
-        "We optimize your website’s content, structure, and meta tags to make it search-engine-friendly. This includes:",
-      service: "SEO",
-    },
-    {
-      _id: "68ac4d6c451cbebaa7a25da6",
-      name: "Android App Development",
-      icon: "./def/imh.jpg",
-      description:
-        "Tap into the vast Android market with innovative and high-performance appst",
-      service: "App Dev",
-    },
-  ];
+  // const tableDataStatic = [
+  //   {
+  //     _id: "68ac4ccaf6405d14145c26be",
+  //     name: "Custom Website Development",
+  //     icon: "./def/imh.jpg",
+  //     description:
+  //       "Tailored to meet your unique business needs and goals, we offer:",
+  //     service: "Web Dev",
+  //   },
+  //   {
+  //     _id: "68ac4cf5f6405d14145c26c2",
+  //     name: "On Page SEO",
+  //     icon: "./def/imh.jpg",
+  //     description:
+  //       "We optimize your website’s content, structure, and meta tags to make it search-engine-friendly. This includes:",
+  //     service: "SEO",
+  //   },
+  //   {
+  //     _id: "68ac4d6c451cbebaa7a25da6",
+  //     name: "Android App Development",
+  //     icon: "./def/imh.jpg",
+  //     description:
+  //       "Tap into the vast Android market with innovative and high-performance appst",
+  //     service: "App Dev",
+  //   },
+  // ];
   const [options, setOptions] = useState([]);
 
   const [service, setService] = useState("");
@@ -169,9 +200,9 @@ export default function Page() {
     console.log(id);
 
     try {
-      const resp = await updateElement(id, JSON.stringify(formData));
+      await updateElement(id, JSON.stringify(formData));
 
-      const newTable = tableData.filter((element) => {
+      const newTable = tableData.filter((element: { _id: string }) => {
         return element._id !== id;
       });
       setTableData([...newTable]);
@@ -186,7 +217,7 @@ export default function Page() {
     }
   };
 
-  async function onServiceChange(e) {
+  async function onServiceChange(e: React.ChangeEvent<HTMLSelectElement>) {
     await getData(e.target.value);
     setService(e.target.value);
   }
@@ -199,7 +230,7 @@ export default function Page() {
     }
     getServices();
     getData(service);
-  }, []);
+  }, [service]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -220,7 +251,7 @@ export default function Page() {
           {tableData.length === 0 ? (
             <span>No Data</span>
           ) : (
-            <AdminTable tableHead={tableHead} tableData={tableData} />
+            <AdminTable<TableRow> tableHead={tableHead} tableData={tableData} />
           )}
         </>
       )}
@@ -234,7 +265,11 @@ export default function Page() {
         {modalData && (
           <div className="max-h-80vh overflow-y-auto space-y-4">
             {modalData.image && (
-              <img src={modalData.image} className="w-full h-auto" />
+              <img
+                src={modalData.image}
+                className="w-full h-auto"
+                alt="image"
+              />
             )}
             <div
               className="prose text-3xl font-bold "

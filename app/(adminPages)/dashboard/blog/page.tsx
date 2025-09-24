@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AdminTable from "../../../ui/admin-table/admin-table";
+import AdminTable, { TypeTableHead } from "../../../ui/admin-table/admin-table";
 import PageHeader from "../../../ui/page-header/page-header";
 import { fetchBlog, fetchBlogList, updateBlog } from "@/app/API/blog.route";
 import { Button } from "@/app/ui/buttons/button";
@@ -13,12 +13,29 @@ import eyeIcon from "@/public/static/mingcute--eye-line.png";
 
 import Swal from "sweetalert2";
 import Modal from "@/app/ui/modal/modal";
-import Card from "@/app/ui/card/card";
+
 import TableSkeleton from "@/app/ui/skeleton/table-skeleton";
+type ModalData = {
+  banner?: string;
+  title?: string;
+  category?: { name: string };
+  content: string | TrustedHTML;
+  // add other fields you need
+};
+type TableRow = {
+  icon: string;
+  banner: string;
+  title: string;
+  category: { name: string } | string;
+  date_created: string;
+  date_published: string;
+  is_published: boolean;
+  _id: string;
+};
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
-  const [modalData, setModalData] = useState<any>(null);
+  const [modalData, setModalData] = useState<ModalData | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   async function getModalData(id: string) {
@@ -26,39 +43,33 @@ export default function Page() {
     await setModalData({ ...data.data });
     setModalOpen(true);
   }
-  const [tableData, setTableData] = useState([]);
-  const tableHead = [
+  const [tableData, setTableData] = useState<TableRow[]>([]);
+  const tableHead: TypeTableHead<TableRow>[] = [
     {
       key: "banner",
       label: "Image",
-      render: (value: string) => {
-        return (
-          value && (
+      render: (value) => {
+        if (value && typeof value === "string") {
+          return (
             <div className="flex items-center justify-center">
               <img
                 src={value}
                 className="h-25 w-25 object-cover rounded-md border-2 border-[#cccccc70]"
+                alt="blog image"
               />
             </div>
-          )
-        );
+          );
+        }
+        return <></>;
       },
     },
     {
       key: "title",
       label: "Blog Title",
-      render: (value: string, data: any) => {
-        return (
-          // <div className="flex gap-2">
-          //   {data.banner && (
-          //     <img
-          //       src={data.banner}
-          //       className="h-20 w-20 rounded-md border-2 border-[#cccccc70]"
-          //     />
-          //   )}
-          <span className="font-semibold">{value}</span>
-          // </div>
-        );
+      render: (value) => {
+        // Render blog title with enhanced readability and error handling
+        const title = value != null ? String(value) : "No title available";
+        return <strong>{title}</strong>;
       },
     },
     {
@@ -66,25 +77,31 @@ export default function Page() {
       label: "Category",
       render: (value) => {
         return (
-          <span className="text-[#6C737F]">{value ? value.name : "-"}</span>
+          <span className="text-[#6C737F]">
+            {typeof value === "object" && value !== null && "name" in value
+              ? value.name
+              : String(value)}
+          </span>
         );
       },
     },
     {
       key: "date_created",
       label: "Date Created",
-      render: (value: string) => {
-        const d = new Date(value);
-        return `${d.getDate()} ${d.toLocaleDateString("default", {
-          month: "short",
-        })}, ${d.getFullYear()}`;
+      render: (value) => {
+        const d = new Date(String(value));
+        return (
+          <>{`${d.getDate()} ${d.toLocaleDateString("default", {
+            month: "short",
+          })}, ${d.getFullYear()}`}</>
+        );
       },
     },
     {
       key: "date_published",
       label: "Publish On",
-      render: (value: string) => {
-        const d = new Date(value);
+      render: (value) => {
+        const d = new Date(String(value));
         return (
           <>
             {value !== null
@@ -99,10 +116,10 @@ export default function Page() {
     {
       key: "is_published",
       label: "Status",
-      render: (value: boolean) => {
+      render: (value) => {
         return (
           <span className=" font-semibold text-[12px]">
-            {value ? (
+            {value && typeof value === "boolean" ? (
               <span className="text-[#0B815A] bg-[#10B9811F] p-2 rounded-full">
                 Published
               </span>
@@ -118,12 +135,12 @@ export default function Page() {
     {
       key: "_id",
       label: "Actions",
-      render: (value: string) => {
+      render: (value) => {
         return (
           <div className="flex gap-2 items-center justify-center">
             <Button
               type="button"
-              onClick={() => getModalData(value)}
+              onClick={() => typeof value === "string" && getModalData(value)}
               className="bg-[#15a80d] !p-1 !rounded-lg"
             >
               <Image src={eyeIcon} alt="Edit" height={24} />
@@ -131,7 +148,8 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                redirect(`/dashboard/blog/${value}`);
+                typeof value === "string" &&
+                  redirect(`/dashboard/blog/${value}`);
               }}
               className="bg-[#6366F1] !p-1 !rounded-lg"
             >
@@ -140,7 +158,7 @@ export default function Page() {
             <Button
               type="button"
               onClick={() => {
-                onDelete(value);
+                typeof value === "string" && onDelete(value);
               }}
               className="bg-[#AF2B0D] !p-1 !rounded-lg"
             >
@@ -152,24 +170,24 @@ export default function Page() {
     },
   ];
 
-  const tableDataStatic = [
-    {
-      id: "abdasdkajd",
-      title: "ABCDEd",
-      date_created: "2025-08-28T06:42:48.838+00:00",
-      is_published: true,
-      date_published: "2025-08-28T06:42:48.838+00:00",
-      category: "SEO",
-    },
-    {
-      id: "abdasdkajdasdasd",
-      title: "ABCDEd",
-      date_created: "2025-08-28T06:42:48.838+00:00",
-      is_published: false,
-      date_published: "2025-08-28T06:42:48.838+00:00",
-      category: "SEO",
-    },
-  ];
+  // const tableDataStatic = [
+  //   {
+  //     id: "abdasdkajd",
+  //     title: "ABCDEd",
+  //     date_created: "2025-08-28T06:42:48.838+00:00",
+  //     is_published: true,
+  //     date_published: "2025-08-28T06:42:48.838+00:00",
+  //     category: "SEO",
+  //   },
+  //   {
+  //     id: "abdasdkajdasdasd",
+  //     title: "ABCDEd",
+  //     date_created: "2025-08-28T06:42:48.838+00:00",
+  //     is_published: false,
+  //     date_published: "2025-08-28T06:42:48.838+00:00",
+  //     category: "SEO",
+  //   },
+  // ];
   async function getData() {
     setIsLoading(true);
     const blogList = await fetchBlogList();
@@ -183,9 +201,9 @@ export default function Page() {
     console.log(blogId);
 
     try {
-      const resp = await updateBlog(blogId, JSON.stringify(formData));
+      await updateBlog(blogId, JSON.stringify(formData));
 
-      const newTable = tableData.filter((blog) => {
+      const newTable = tableData.filter((blog: TableRow) => {
         return blog._id !== blogId;
       });
       setTableData([...newTable]);
@@ -223,7 +241,11 @@ export default function Page() {
       >
         {modalData && (
           <div className="max-h-80vh overflow-y-auto space-y-4">
-            <img src={modalData.banner} className="w-full h-auto" />
+            <img
+              alt="model image"
+              src={modalData && modalData.banner}
+              className="w-full h-auto"
+            />
             <div className="text-3xl font-bold ">{modalData.title}</div>
             {modalData.category && (
               <span className="text-[#6C737F] text-sm">

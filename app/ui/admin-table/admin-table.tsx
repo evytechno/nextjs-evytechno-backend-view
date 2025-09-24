@@ -1,16 +1,26 @@
-type TypeTableHead = {
+// type TypeTableHead = {
+//   label: string;
+//   key: string;
+//   render?: (value: any, data: Record<string, any>) => React.ReactNode;
+// };
+
+import React, { JSX } from "react";
+
+export type TypeTableHead<T extends Record<string, unknown>> = {
   label: string;
-  key: string;
-  render: (value: any, data: any) => string;
+  key: keyof T & string;
+  render?: (value: T[keyof T], data?: T) => JSX.Element;
 };
 
-const AdminTable = ({
+type AdminTableProps<T extends Record<string, unknown>> = {
+  tableHead: TypeTableHead<T>[];
+  tableData: T[];
+};
+
+const AdminTable = <T extends Record<string, unknown>>({
   tableHead,
   tableData,
-}: {
-  tableHead: TypeTableHead[];
-  tableData: any[];
-}) => {
+}: AdminTableProps<T>) => {
   console.log("Table", tableData);
   return (
     <table className="my-5 px-5 text-left !rounded-3xl shadow-md shadow-[#ccc]">
@@ -40,7 +50,7 @@ const AdminTable = ({
                   >
                     {colData.render
                       ? colData.render(data[colData.key], data)
-                      : data[colData.key]}
+                      : String(data[colData.key])}
                   </td>
                 );
               })}

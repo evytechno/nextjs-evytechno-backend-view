@@ -6,7 +6,7 @@ import Card from "@/app/ui/card/card";
 import FormLayout from "@/app/ui/form-elements/form-layout";
 import Input from "@/app/ui/form-elements/input";
 import TextEditor from "@/app/ui/form-elements/text-editor";
-import PageTitle from "@/app/ui/text-comp/pageTitle";
+
 import { redirect } from "next/navigation";
 import { useState } from "react";
 import Swal from "sweetalert2";
@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
+import LinksTable from "@/app/ui/form-elements/links-table";
 
 type FormData = z.infer<typeof PageSchema>;
 
@@ -49,7 +50,7 @@ export default function Page() {
     }
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: object) => {
     try {
       const formData = {
         ...e,
@@ -127,7 +128,6 @@ export default function Page() {
                 errors={errors}
               />
               <TextEditor
-                {...register("title")}
                 name="title"
                 placeholder="Page Title."
                 value={pageTitle}
@@ -143,7 +143,8 @@ export default function Page() {
                 <div className="grid grid-rows-2 gap-5 items-center w-full">
                   <input
                     type="file"
-                    {...register("image")}
+                    placeholder="Upload image"
+                    // {...register("image")}
                     name="image"
                     accept="image/"
                     className="w-full border-2 border-[#E5E7EB] rounded-3xl p-3"
@@ -165,18 +166,25 @@ export default function Page() {
           </Card>
         </div>
         {/* ContentCard  */}
-        <Card>
-          <FormLayout title="Description">
-            <TextEditor
-              {...register("description")}
-              name="description"
-              placeholder="Page Description Starts here..."
-              value={content}
-              onContentChange={setContent}
-              rows={10}
-            />
-          </FormLayout>
-        </Card>
+        <div className="flex gap-5 justify-between ">
+          <Card>
+            <FormLayout title="Description">
+              <TextEditor
+                name="description"
+                placeholder="Page Description Starts here..."
+                value={content}
+                onContentChange={setContent}
+                rows={15}
+              />
+            </FormLayout>
+          </Card>
+          <Card className="max-w-[25%]">
+            <h2 className="text-lg font-semibold pb-1.5">Links</h2>
+            <div className="max-h-[360px] overflow-y-auto border-2 border-[#E5E7EB] rounded-2xl">
+              <LinksTable content={content} />
+            </div>
+          </Card>
+        </div>
       </form>
     </div>
   );
